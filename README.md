@@ -26,7 +26,7 @@ Python: Required for the tabula.py script used in our data scraping services.
 Java JDK: A dependency for the tabula-py library, which is used for parsing PDF data.
 
 ## Installation
-Clone the repository:
+Clone the repository: `git clone `
 
 Install dependencies:
 
