@@ -8,7 +8,6 @@ import { Server as SocketIOServer, Socket } from 'socket.io';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import authRoutes from './routes/auth.routes';
-import messageRoutes from './routes/message.routes';
 import productRoutes from './routes/product.routes';
 import cartRoutes from './routes/cart.routes';
 import marketPriceRoutes from './routes/marketPrice.routes';
@@ -41,7 +40,6 @@ app.use('/api/market-prices', marketPriceRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/order', orderRoutes);
 app.use('/api/review', reviewRoutes);
-app.use('/api/message', messageRoutes);
 app.use('/api/upload', uploadRoutes);
 
 
