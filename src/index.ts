@@ -1,17 +1,26 @@
+import dotenv from 'dotenv';
+import path from 'path';
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
 import express from 'express';
 import http from 'http';
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import authRoutes from './routes/auth.routes';
 import messageRoutes from './routes/message.routes';
+import productRoutes from './routes/product.routes';
+import cartRoutes from './routes/cart.routes';
+import marketPriceRoutes from './routes/marketPrice.routes';
+import orderRoutes from './routes/orderRoutes'
 import { connectDB } from './config/db';
 import { errorHandler } from './middlewares/error.middleware';
 import { UserRole } from './types/enums';
-import path from 'path';
+import uploadRoutes from './routes/upload.routes';
+// import { startJobScheduler } from './jobs/scheduler';
+// import { runPriceScraperJob } from './jobs/priceScraper.job';
 
-dotenv.config({ path: path.resolve(__dirname, '../.env') }); // Adjust path as needed relative to your project root
+
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -26,15 +35,17 @@ app.use(express.json());
 
 // --- Express Routes ---
 app.use('/api/auth', authRoutes);
-app.use('/api/product', messageRoutes);
-app.use('/api/cart', messageRoutes);
-app.use('/api/order', messageRoutes);
+app.use('/api/product', productRoutes);
+app.use('/api/market-prices', marketPriceRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/order', orderRoutes);
 app.use('/api/review', messageRoutes);
 app.use('/api/cropModeration', messageRoutes);
 app.use('/api/farmerModeration', messageRoutes);
 app.use('/api/reportModeration', messageRoutes);
 app.use('/api/message', messageRoutes);
 app.use('/api/admin', messageRoutes);
+app.use('/api/upload', uploadRoutes);
 
 
 // --- Global Error Handler ---
@@ -129,6 +140,19 @@ io.on('connection', (socket: Socket) => {
 
 // Export the `io` instance so it can be used by other parts of your application (e.g., services)
 export { io, connectedUsers };
+
+// startJobScheduler();
+
+// NEW: Manually trigger the price scraper job once on server startup to seed the database
+// (async () => {
+//   console.log('[SEED DATA] Attempting to run price scraper job for initial data seeding...');
+//   try {
+//     await runPriceScraperJob();
+//     console.log('[SEED DATA] Initial price scraping job completed successfully.');
+//   } catch (error) {
+//     console.error('[SEED DATA] Failed to run initial price scraping job:', error);
+//   }
+// })();
 
 // Start the HTTP server (which Socket.IO is attached to)
 httpServer.listen(PORT, () => {

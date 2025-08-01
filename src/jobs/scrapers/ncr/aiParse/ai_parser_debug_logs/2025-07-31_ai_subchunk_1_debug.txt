@@ -1,0 +1,407 @@
+=== RAW LLM TABLE OUTPUT (SUB-CHUNK 1) ===
+Input Type: unstructured
+Potential Records (from LLM): 33
+Inserted Records (after validation): 33
+
+```text
+crop_name|category|specification|price|unit
+IMPORTED COMMERCIAL RICE|Rice|Fancy White Rice|55.68|P/unit
+IMPORTED COMMERCIAL RICE|Rice|Premium 5% broken|44.84|P/unit
+IMPORTED COMMERCIAL RICE|Rice|Well Milled 1-19% bran streak|43.95|P/unit
+IMPORTED COMMERCIAL RICE|Rice|Regular Milled 20-40% bran streak|38.24|P/unit
+LOCAL COMMERCIAL RICE|Rice|Fancy White Rice|57.40|P/unit
+LOCAL COMMERCIAL RICE|Rice|Premium 5% broken|50.85|P/unit
+LOCAL COMMERCIAL RICE|Rice|Well Milled 1-19% bran streak|43.54|P/unit
+LOCAL COMMERCIAL RICE|Rice|Regular Milled 20-40% bran streak|38.55|P/unit
+CORN|Corn|Corn (White) Cob, Glutinous|80.83|P/unit
+CORN|Corn|Corn (Yellow) Cob, Sweet Corn|71.60|P/unit
+CORN|Corn|Corn Grits (White, Food Grade)|n/a|P/unit
+CORN|Corn|Corn Grits (Yellow, Food Grade)|n/a|P/unit
+CORN|Corn|Corn Cracked (Yellow, Feed Grade)|n/a|P/unit
+CORN|Corn|Corn Grits (Feed Grade)|40.00|P/unit
+FISH|Fish|Bangus Large|254.90|P/unit
+FISH|Fish|Bangus Medium (3-4pcs/kg)|227.83|P/kg
+FISH|Fish|Tilapia Medium (5-6pcs/kg)|152.60|P/kg
+FISH|Fish|Galunggong (Local) Male, Medium (12-\n14pcs/kg)|293.87|P/kg
+FISH|Fish|Galunggong (Imported) Male, Medium (12-\n14pcs/kg)|n/a|P/kg
+FISH|Fish|Alumahan Medium (4-6pcs/kg)|347.42|P/kg
+FISH|Fish|Salmon Head, Local|221.14|P/unit
+FISH|Fish|Salmon Head, Imported|226.06|P/unit
+FISH|Fish|Salmon Belly, Local|390.00|P/unit
+FISH|Fish|Salmon Belly, Imported|413.91|P/unit
+FISH|Fish|Sardines (Tamban)|122.00|P/unit
+FISH|Fish|Squid (Pusit Bisaya)|425.61|P/unit
+FISH|Fish|Squid, Imported|n/a|P/unit
+FISH|Fish|Pompano, Local|405.45|P/unit
+FISH|Fish|Pompano, Imported|399.33|P/unit
+FISH|Fish|Mackerel, Local-Fresh|n/a|P/unit
+FISH|Fish|Mackerel, Frozen, whole\nround|n/a|P/unit
+FISH|Fish|Yellow-Fin Tuna/Tambakol (fresh or\nchilled)|n/a|P/unit
+```
+
+=== VALIDATED AND PREPARED RECORDS FOR INSERTION (FROM THIS SUB-CHUNK) ===
+[
+  {
+    "crop_name": "crop_name",
+    "category": "category",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "specification"
+  },
+  {
+    "crop_name": "IMPORTED COMMERCIAL RICE",
+    "category": "Rice",
+    "region": "NCR",
+    "price": 55.68,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Fancy White Rice"
+  },
+  {
+    "crop_name": "IMPORTED COMMERCIAL RICE",
+    "category": "Rice",
+    "region": "NCR",
+    "price": 44.84,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Premium 5% broken"
+  },
+  {
+    "crop_name": "IMPORTED COMMERCIAL RICE",
+    "category": "Rice",
+    "region": "NCR",
+    "price": 43.95,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Well Milled 1-19% bran streak"
+  },
+  {
+    "crop_name": "IMPORTED COMMERCIAL RICE",
+    "category": "Rice",
+    "region": "NCR",
+    "price": 38.24,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Regular Milled 20-40% bran streak"
+  },
+  {
+    "crop_name": "LOCAL COMMERCIAL RICE",
+    "category": "Rice",
+    "region": "NCR",
+    "price": 57.4,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Fancy White Rice"
+  },
+  {
+    "crop_name": "LOCAL COMMERCIAL RICE",
+    "category": "Rice",
+    "region": "NCR",
+    "price": 50.85,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Premium 5% broken"
+  },
+  {
+    "crop_name": "LOCAL COMMERCIAL RICE",
+    "category": "Rice",
+    "region": "NCR",
+    "price": 43.54,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Well Milled 1-19% bran streak"
+  },
+  {
+    "crop_name": "LOCAL COMMERCIAL RICE",
+    "category": "Rice",
+    "region": "NCR",
+    "price": 38.55,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Regular Milled 20-40% bran streak"
+  },
+  {
+    "crop_name": "CORN",
+    "category": "Corn",
+    "region": "NCR",
+    "price": 80.83,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Corn (White) Cob, Glutinous"
+  },
+  {
+    "crop_name": "CORN",
+    "category": "Corn",
+    "region": "NCR",
+    "price": 71.6,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Corn (Yellow) Cob, Sweet Corn"
+  },
+  {
+    "crop_name": "CORN",
+    "category": "Corn",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Corn Grits (White, Food Grade)"
+  },
+  {
+    "crop_name": "CORN",
+    "category": "Corn",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Corn Grits (Yellow, Food Grade)"
+  },
+  {
+    "crop_name": "CORN",
+    "category": "Corn",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Corn Cracked (Yellow, Feed Grade)"
+  },
+  {
+    "crop_name": "CORN",
+    "category": "Corn",
+    "region": "NCR",
+    "price": 40,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Corn Grits (Feed Grade)"
+  },
+  {
+    "crop_name": "FISH",
+    "category": "Fish",
+    "region": "NCR",
+    "price": 254.9,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Bangus Large"
+  },
+  {
+    "crop_name": "FISH",
+    "category": "Fish",
+    "region": "NCR",
+    "price": 227.83,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Bangus Medium (3-4pcs/kg)"
+  },
+  {
+    "crop_name": "FISH",
+    "category": "Fish",
+    "region": "NCR",
+    "price": 152.6,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Tilapia Medium (5-6pcs/kg)"
+  },
+  {
+    "crop_name": "FISH",
+    "category": "Fish",
+    "region": "NCR",
+    "price": 293.87,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Galunggong (Local) Male, Medium (12-\\n14pcs/kg)"
+  },
+  {
+    "crop_name": "FISH",
+    "category": "Fish",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Galunggong (Imported) Male, Medium (12-\\n14pcs/kg)"
+  },
+  {
+    "crop_name": "FISH",
+    "category": "Fish",
+    "region": "NCR",
+    "price": 347.42,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Alumahan Medium (4-6pcs/kg)"
+  },
+  {
+    "crop_name": "FISH",
+    "category": "Fish",
+    "region": "NCR",
+    "price": 221.14,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Salmon Head, Local"
+  },
+  {
+    "crop_name": "FISH",
+    "category": "Fish",
+    "region": "NCR",
+    "price": 226.06,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Salmon Head, Imported"
+  },
+  {
+    "crop_name": "FISH",
+    "category": "Fish",
+    "region": "NCR",
+    "price": 390,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Salmon Belly, Local"
+  },
+  {
+    "crop_name": "FISH",
+    "category": "Fish",
+    "region": "NCR",
+    "price": 413.91,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Salmon Belly, Imported"
+  },
+  {
+    "crop_name": "FISH",
+    "category": "Fish",
+    "region": "NCR",
+    "price": 122,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Sardines (Tamban)"
+  },
+  {
+    "crop_name": "FISH",
+    "category": "Fish",
+    "region": "NCR",
+    "price": 425.61,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Squid (Pusit Bisaya)"
+  },
+  {
+    "crop_name": "FISH",
+    "category": "Fish",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Squid, Imported"
+  },
+  {
+    "crop_name": "FISH",
+    "category": "Fish",
+    "region": "NCR",
+    "price": 405.45,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Pompano, Local"
+  },
+  {
+    "crop_name": "FISH",
+    "category": "Fish",
+    "region": "NCR",
+    "price": 399.33,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Pompano, Imported"
+  },
+  {
+    "crop_name": "FISH",
+    "category": "Fish",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Mackerel, Local-Fresh"
+  },
+  {
+    "crop_name": "FISH",
+    "category": "Fish",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Mackerel, Frozen, whole\\nround"
+  },
+  {
+    "crop_name": "FISH",
+    "category": "Fish",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Yellow-Fin Tuna/Tambakol (fresh or\\nchilled)"
+  }
+]

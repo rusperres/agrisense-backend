@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import * as ProductController from '../controllers/product.controller';
-import { validateCreateProduct, validateUpdateProduct } from '../middlewares/validate.middleware'; // We'll add these
+import { validateCreateProduct, validateProductId, validateUpdateProduct } from '../middlewares/validate.middleware'; // We'll add these
 import { authenticateUser, authorizeRoles } from '../middlewares/auth.middleware'; // Reuse your auth middleware
 import { UserRole } from '../types/enums'; // Import UserRole enum
 
@@ -29,11 +29,21 @@ router.delete(
 
 router.get(
     '/',
-    authenticateUser, 
+    authenticateUser,
     ProductController.fetchProducts
+);
+
+router.get(
+    '/:id',
+    validateProductId, // Validate the product ID from URL params
+    ProductController.fetchProductById
 );
 
 
 
+router.get(
+    '/seller', authenticateUser,
+    authorizeRoles([UserRole.Seller]),
+    ProductController.fetchProductsBySellerId);
 
 export default router;

@@ -1,0 +1,66 @@
+=== RAW LLM TABLE OUTPUT (SUB-CHUNK 7) ===
+Input Type: unstructured
+Potential Records (from LLM): 3
+Inserted Records (after validation): 1
+
+crop_name|category|specification|price|unit
+Local Peckin Duck|||n/a|P/unit
+Imported Peckin Duck|||n/a|P/unit
+Local Duck Meat|Breast, leg and other cuts||n/a|P/unit
+Local Whole Duck|Intact duck for a roasting or
+other preparations||n/a|P/unit
+Chicken Egg|(White, Medium) 56-60 grams/pc|8.14|P/pc
+Ampalaya|4-5 pcs/kg|180.94|P/kg
+Sitao|3-4 Small Bundles|137.65|P/unit
+Pechay|(Native) 3-4 Small Bundles|159.37|P/unit
+Squash|Suprema Variety|59.15|P/unit
+Eggplant|3-4 Small Bundles|152.11|P/unit
+Tomato|15-18 pcs/kg|78.36|P/kg
+Bell Pepper|(Green), Local Medium (151-250gm/pc)|270.75|P/pc
+Bell Pepper|(Green), Imported|n/a|P/pc
+Bell Pepper|(Red), Local Medium (151-250gm/pc)|262.60|P/pc
+Bell Pepper|(Red), Imported|n/a|P/pc
+Broccoli|Local Medium (8-10 cm
+diameter/bunch hd)|245.34|P/unit
+Broccoli|Imported|271.30|P/unit
+Cabbage|(Rare Ball), Local 510 gm - 1 kg/head|110.07|P/head
+Cabbage|(Scorpio), Local 750 gm - 1 kg/head|110.00|P/head
+Cabbage|(Wonder Ball), Local 510 gm - 1 kg/head|120.77|P/head
+Cabbage|Imported|n/a|P/unit
+Carrots|Local 8-10 pcs/kg|184.38|P/kg
+Carrots|Imported|n/a|P/kg
+Habichuelas|(Baguio beans), local|148.83|P/unit
+White Potato|Local 10-12 pcs/kg|103.49|P/kg
+White Potato|Imported|n/a|P/kg
+Lettuce|(Green Ice), Local|291.72|P/unit
+Lettuce|(Iceberg), Local Medium (301-450 cm
+diameter/bunch hd)|281.56|P/unit
+Lettuce|(Romaine), Local|269.64|P/unit
+Lettuce|Imported|n/a|P/unit
+Red Onion|13-15 pcs/kg|148.71|P/kg
+Red Onion|(Imported)|n/a|P/kg
+White Onion||139.60|P/unit
+White Onion|(Imported)|n/a|P/unit
+Garlic|(Imported)|154.75|P/unit
+Garlic|(Native)|450.00|P/unit
+Ginger|(Local) Fairly well-matured,
+Medium (150-300 gm)|211.27|P/unit
+Ginger|(Imported) Fairly well-matured,
+Medium (150-300 gm)|187.89|P/unit
+Chilli|(Labuyo), Local Siling Tingala|342.45|P/unit
+
+
+=== VALIDATED AND PREPARED RECORDS FOR INSERTION (FROM THIS SUB-CHUNK) ===
+[
+  {
+    "crop_name": "Local Duck Meat",
+    "category": "Breast, leg and other cuts",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  }
+]

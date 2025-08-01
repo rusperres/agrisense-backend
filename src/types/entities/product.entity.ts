@@ -5,17 +5,17 @@ export interface ProductEntity {
   id: string;
   seller_id: string;
   name: string;
-  category: string;
-  price: number;
-  unit: string;
-  stock: number;
   variety: string | null;
+  quantity: number;
+  unit: string;
+  price: number;
   description: string | null;
+  harvest_date: string;
+  location: string | null;
+  category: string;
   images: string[] | null;
-  harvest_date: string | null;
   condition: ProductCondition | null;
   is_active: boolean;
-  location: DBLocation | null;
   created_at: string;
   updated_at: string;
 }

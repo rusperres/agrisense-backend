@@ -4,44 +4,14 @@ import { CartEntity, CartItemEntity } from '../types/entities/cart.entity';
 import { ProductEntity } from '../types/entities/product.entity';
 import { CartResponseDto, CartItemResponseDto } from '../types/dtos/cart.dto';
 import { Product } from '../types/dtos/product.dto';
-import { Location, DBLocation } from '../types/location';
-import { ProductCondition } from '../types/enums';
+import { DBLocation } from '../types/location';
+import { mapProductEntityToProductDTO } from './utils/product.map'; // Import the shared mapping function
 
-// --- Helper functions for Product Mapping ---
-function fromDBLocation(dbLocation: DBLocation | null): Location | null {
-    if (!dbLocation || !dbLocation.coordinates || dbLocation.coordinates.length < 2) {
-        return null;
-    }
-    return {
-        lat: dbLocation.coordinates[1],
-        lng: dbLocation.coordinates[0],
-        address: dbLocation.properties?.address || null
-    };
-}
-
-function mapProductEntityToProductDTO(entity: ProductEntity): Product {
-    return {
-        id: entity.id,
-        seller_id: entity.seller_id,
-        name: entity.name,
-        category: entity.category,
-        price: entity.price,
-        unit: entity.unit,
-        stock: entity.stock,
-        variety: entity.variety,
-        description: entity.description,
-        images: entity.images,
-        harvest_date: entity.harvest_date,
-        condition: entity.condition as ProductCondition,
-        is_active: entity.is_active,
-        location: fromDBLocation(entity.location),
-        created_at: entity.created_at,
-        updated_at: entity.updated_at,
-    };
-}
+// --- Main Cart Service Functions ---
 
 /**
  * Helper to map CartEntity and related ProductEntities to CartResponseDto.
+ * Utilizes the shared mapProductEntityToProductDTO for product mapping.
  */
 async function mapCartEntityToResponseDto(client: PoolClient, cartEntity: CartEntity): Promise<CartResponseDto> {
     const dbCartItems: CartItemEntity[] = cartEntity.items || [];
@@ -49,10 +19,14 @@ async function mapCartEntityToResponseDto(client: PoolClient, cartEntity: CartEn
     const productIds = dbCartItems.map(item => item.productId);
     const uniqueProductIds = [...new Set(productIds)];
 
-    let productsMap = new Map<string, ProductEntity>();
+    let productsMap = new Map<string, ProductEntity & { location_geojson_text?: string }>(); // Include location_geojson_text
     if (uniqueProductIds.length > 0) {
-        const productResult = await client.query<ProductEntity>(
-            `SELECT * FROM products WHERE id = ANY($1::uuid[]);`,
+        const productResult = await client.query<ProductEntity & { location_geojson_text: string }>(
+            `SELECT 
+                id, seller_id, name, variety, quantity, unit, price, description, 
+                harvest_date, ST_AsGeoJSON(location)::text as location_geojson_text, category, images, 
+                condition, is_active, created_at, updated_at 
+            FROM products WHERE id = ANY($1::uuid[]);`,
             [uniqueProductIds]
         );
         productResult.rows.forEach(p => productsMap.set(p.id, p));
@@ -63,10 +37,23 @@ async function mapCartEntityToResponseDto(client: PoolClient, cartEntity: CartEn
     const responseItems: CartItemResponseDto[] = [];
 
     for (const dbItem of dbCartItems) {
-        const productEntity = productsMap.get(dbItem.productId);
+        const productEntityFromDB = productsMap.get(dbItem.productId);
 
-        if (productEntity) {
-            const productDto = mapProductEntityToProductDTO(productEntity);
+        if (productEntityFromDB) {
+            // Parse the location string from DB to an object before mapping
+            const parsedLocation: DBLocation | null = productEntityFromDB.location_geojson_text ? JSON.parse(productEntityFromDB.location_geojson_text) as DBLocation : null;
+
+            // Create a new object that correctly types the 'location' property for the mapper
+            const productEntityForMapping = {
+                ...productEntityFromDB,
+                location: parsedLocation,
+                harvest_date: productEntityFromDB.harvest_date, // Ensure Date string
+                created_at: productEntityFromDB.created_at, // Ensure Date string
+                updated_at: productEntityFromDB.updated_at, // Ensure Date string
+            };
+
+            const productDto = mapProductEntityToProductDTO(productEntityForMapping as any); // Cast to any due to Omit type
+
             const subtotal = productDto.price * dbItem.quantity;
 
             responseItems.push({
@@ -80,8 +67,7 @@ async function mapCartEntityToResponseDto(client: PoolClient, cartEntity: CartEn
             totalItems += dbItem.quantity;
             totalAmount += subtotal;
         }
-        // TODO: Consider how to handle products that are no longer available/active/exist
-        // For now, they are simply skipped. You might want to return an error or a warning.
+        // Products that are no longer active or found will be skipped, effectively removing them from the displayed cart.
     }
 
     return {
@@ -90,8 +76,6 @@ async function mapCartEntityToResponseDto(client: PoolClient, cartEntity: CartEn
         totalAmount: totalAmount,
     };
 }
-
-// --- Main Cart Service Functions ---
 
 /**
  * Fetches the user's cart, populates product details, and calculates totals.
@@ -126,54 +110,11 @@ export const fetchCartByUserId = async (userId: string): Promise<CartResponseDto
             cartEntity = cartResult.rows[0];
         }
 
-        const dbCartItems: CartItemEntity[] = cartEntity.items || [];
-
-        // 2. Extract unique product IDs from cart items
-        const productIds = dbCartItems.map(item => item.productId);
-        const uniqueProductIds = [...new Set(productIds)]; // Deduplicate product IDs
-
-        // 3. Fetch all necessary product details in one go
-        let productsMap = new Map<string, ProductEntity>();
-        if (uniqueProductIds.length > 0) {
-            const productResult = await client.query<ProductEntity>(
-                `SELECT * FROM products WHERE id = ANY($1::uuid[]);`,
-                [uniqueProductIds]
-            );
-            productResult.rows.forEach(p => productsMap.set(p.id, p));
-        }
-
-        // 4. Map CartItemEntity to CartItemResponseDto and calculate totals
-        let totalItems = 0;
-        let totalAmount = 0;
-        const responseItems: CartItemResponseDto[] = [];
-
-        for (const dbItem of dbCartItems) {
-            const productEntity = productsMap.get(dbItem.productId);
-
-            if (productEntity) {
-                const productDto = mapProductEntityToProductDTO(productEntity);
-                const subtotal = productDto.price * dbItem.quantity;
-
-                responseItems.push({
-                    id: dbItem.id,
-                    productId: dbItem.productId,
-                    product: productDto,
-                    quantity: dbItem.quantity,
-                    subtotal: subtotal,
-                });
-
-                totalItems += dbItem.quantity;
-                totalAmount += subtotal;
-            }
-        }
+        // Use the helper function to map the cart entity to the response DTO
+        const responseDto = await mapCartEntityToResponseDto(client, cartEntity);
 
         await client.query('COMMIT');
-
-        return {
-            items: responseItems,
-            totalItems: totalItems,
-            totalAmount: totalAmount,
-        };
+        return responseDto;
 
     } catch (error: any) {
         if (client) {
@@ -190,7 +131,7 @@ export const fetchCartByUserId = async (userId: string): Promise<CartResponseDto
 
 /**
  * Adds a product to the user's cart or updates its quantity if it already exists.
- * Performs stock checks.
+ * Performs quantity checks.
  * @param userId The ID of the user.
  * @param productId The ID of the product to add.
  * @param quantity The quantity to add (or increment by).
@@ -202,9 +143,9 @@ export const addItemToCart = async (userId: string, productId: string, quantity:
         client = await pool.connect();
         await client.query('BEGIN');
 
-        // 1. Fetch the product to validate existence and stock
+        // 1. Fetch the product to validate existence and quantity
         const productResult = await client.query<ProductEntity>(
-            `SELECT * FROM products WHERE id = $1 AND is_active = TRUE;`,
+            `SELECT quantity, is_active, unit FROM products WHERE id = $1 AND is_active = TRUE;`,
             [productId]
         );
 
@@ -244,8 +185,8 @@ export const addItemToCart = async (userId: string, productId: string, quantity:
             const existingItem = newCartItems[existingCartItemIndex];
             const newQuantity = existingItem.quantity + quantity;
 
-            if (newQuantity > product.stock) {
-                throw new Error(`Cannot add more. Only ${product.stock} ${product.unit} available.`);
+            if (newQuantity > product.quantity) {
+                throw new Error(`Cannot add more. Only ${product.quantity} ${product.unit} available.`);
             }
 
             newCartItems[existingCartItemIndex] = {
@@ -253,8 +194,8 @@ export const addItemToCart = async (userId: string, productId: string, quantity:
                 quantity: newQuantity,
             };
         } else {
-            if (quantity > product.stock) {
-                throw new Error(`Only ${product.stock} ${product.unit} available.`);
+            if (quantity > product.quantity) {
+                throw new Error(`Only ${product.quantity} ${product.unit} available.`);
             }
 
             const newCartItemId = crypto.randomUUID();
@@ -370,7 +311,7 @@ export const removeCartItemById = async (userId: string, itemId: string): Promis
 
 /**
  * Updates the quantity of a specific item in the user's cart.
- * Performs stock checks.
+ * Performs quantity checks against product's available quantity.
  * @param userId The ID of the user.
  * @param itemId The unique ID of the cart item to update.
  * @param newQuantity The new quantity for the item.
@@ -406,9 +347,9 @@ export const updateCartItemQuantity = async (userId: string, itemId: string, new
 
         const itemToUpdate = currentCartItems[itemIndex];
 
-        // 3. Fetch the product details to validate stock
+        // 3. Fetch the product details to validate quantity
         const productResult = await client.query<ProductEntity>(
-            `SELECT * FROM products WHERE id = $1 AND is_active = TRUE;`,
+            `SELECT quantity, is_active, unit FROM products WHERE id = $1 AND is_active = TRUE;`,
             [itemToUpdate.productId]
         );
 
@@ -417,19 +358,24 @@ export const updateCartItemQuantity = async (userId: string, itemId: string, new
         }
         const product = productResult.rows[0];
 
-        // 4. Validate new quantity against product stock
-        if (newQuantity > product.stock) {
-            throw new Error(`Cannot update quantity to ${newQuantity}. Only ${product.stock} ${product.unit} available.`);
+        // 4. Validate new quantity against product's available quantity
+        if (newQuantity > product.quantity) {
+            throw new Error(`Cannot update quantity to ${newQuantity}. Only ${product.quantity} ${product.unit} available.`);
         }
 
-        // 5. Update the quantity of the item
+        // 5. Ensure newQuantity is not negative
+        if (newQuantity < 0) {
+            throw new Error('Quantity cannot be negative.');
+        }
+
+        // 6. Update the quantity of the item
         const updatedCartItems: CartItemEntity[] = [...currentCartItems];
         updatedCartItems[itemIndex] = {
             ...itemToUpdate,
             quantity: newQuantity,
         };
 
-        // 6. Update the cart in the database with the modified items
+        // 7. Update the cart in the database with the modified items
         const updatedCartResult = await client.query<CartEntity>(
             `UPDATE carts
        SET items = $1::jsonb, updated_at = NOW()
@@ -440,7 +386,7 @@ export const updateCartItemQuantity = async (userId: string, itemId: string, new
 
         const updatedCartEntity = updatedCartResult.rows[0];
 
-        // 7. Map the updated CartEntity to CartResponseDto and return
+        // 8. Map the updated CartEntity to CartResponseDto and return
         const responseDto = await mapCartEntityToResponseDto(client, updatedCartEntity);
 
         await client.query('COMMIT');
@@ -451,7 +397,7 @@ export const updateCartItemQuantity = async (userId: string, itemId: string, new
             await client.query('ROLLBACK');
         }
         console.error('Error updating cart item quantity:', error);
-        if (error.message.includes('Cart not found') || error.message.includes('Cart item with ID') || error.message.includes('Associated product not found') || error.message.includes('Cannot update quantity')) {
+        if (error.message.includes('Cart not found') || error.message.includes('Cart item with ID') || error.message.includes('Associated product not found') || error.message.includes('Cannot update quantity') || error.message.includes('Quantity cannot be negative')) {
             throw new Error(error.message);
         }
         throw new Error(error.message || 'Failed to update cart item quantity.');
@@ -483,6 +429,7 @@ export const clearUserCart = async (userId: string): Promise<CartResponseDto> =>
 
         if (result.rows.length === 0) {
             await client.query('COMMIT');
+            // If no cart found, return an empty cart response
             return { items: [], totalItems: 0, totalAmount: 0 };
         }
 

@@ -25,9 +25,9 @@ export const insertMarketPrices = async (marketPrices: NewMarketPrice[]): Promis
   const regions = marketPrices.map(mp => mp.region || null);
   const prices = marketPrices.map(mp => mp.price || null);
   const units = marketPrices.map(mp => mp.unit || null);
-  const trends = marketPrices.map(mp => mp.trend || null); // Keep as MarketTrend or cast if needed by DB
+  const trends = marketPrices.map(mp => mp.trend || null); // Note: mp.trend is already a string ('up', 'down', etc.)
   const sources = marketPrices.map(mp => mp.source || null);
-  const dates = marketPrices.map(mp => mp.date ? new Date(mp.date) : null); // Ensure date is a Date object if storing as date type
+  const dates = marketPrices.map(mp => mp.date || null);
   const specifications = marketPrices.map(mp => mp.specification || null);
 
   const query = `
@@ -42,100 +42,56 @@ export const insertMarketPrices = async (marketPrices: NewMarketPrice[]): Promis
       date,
       specification
     )
-    SELECT
-      unnest($1::text[]),
-      unnest($2::text[]),
-      unnest($3::text[]),
-      unnest($4::numeric[]),
-      unnest($5::text[]),
-      unnest($6::text[]),
-      unnest($7::text[]),
-      unnest($8::date[]),
-      unnest($9::text[])
-    RETURNING *; -- Keep RETURNING * to get the newly inserted rows, including their 'id'
+    SELECT *
+    FROM UNNEST(
+      $1::TEXT[],
+      $2::TEXT[],
+      $3::TEXT[],
+      $4::NUMERIC[],
+      $5::TEXT[],
+      $6::market_trend[],
+      $7::TEXT[],
+      $8::DATE[],
+      $9::TEXT[]
+    ) AS t(crop_name, category, region, price, unit, trend, source, date, specification)
+    RETURNING *;
   `;
 
+  const values = [
+    cropNames,
+    categories,
+    regions,
+    prices,
+    units,
+    trends,
+    sources,
+    dates,
+    specifications,
+  ];
+
   try {
-    const res = await pool.query<MarketPriceEntity>(query, [
-      cropNames,
-      categories,
-      regions,
-      prices,
-      units,
-      trends,
-      sources,
-      dates,
-      specifications
-    ]);
-    console.log(`[MarketPrice Model] Successfully inserted ${res.rows.length} market price records.`);
-    return res.rows;
-  } catch (error) {
-    console.error('[MarketPrice Model] Error inserting market prices:', error);
-    // Be more specific about the error if needed, but for now, re-throwing is fine.
-    throw new Error('Failed to insert market prices into database.');
+    const result = await pool.query<MarketPriceEntity>(query, values);
+    console.log(`[MarketPrice Model] Successfully inserted ${result.rowCount} market price records.`);
+    return result.rows;
+  } catch (error: any) {
+    console.error(`[MarketPrice Model] Error inserting market prices:`, error);
+    throw new Error('Database error during market price insertion.');
   }
 };
 
-
 /**
- * Finds market prices by date and optionally by region, crop name, and specification.
- * @param date The date to filter by (YYYY-MM-DD string).
- * @param region Optional region to filter by.
- * @param crop_name Optional crop name to filter by.
- * @param specification Optional specification to filter by.
- * @returns A Promise resolving to an array of MarketPriceEntity objects.
- */
-export const findMarketPricesByDate = async (
-  date: string,
-  region?: string,
-  crop_name?: string,
-  specification?: string // ADDED THIS
-): Promise<MarketPriceEntity[]> => {
-  let query = `SELECT * FROM market_prices WHERE date = $1`;
-  const params: (string | number)[] = [date];
-  let paramIndex = 2;
-
-  if (region) {
-    query += ` AND region = $${paramIndex}`;
-    params.push(region);
-    paramIndex++;
-  }
-  if (crop_name) {
-    query += ` AND crop_name ILIKE $${paramIndex}`; // Use ILIKE for case-insensitive search
-    params.push(`%${crop_name}%`);
-    paramIndex++;
-  }
-  if (specification) { // ADDED THIS
-    query += ` AND specification ILIKE $${paramIndex}`;
-    params.push(`%${specification}%`);
-    paramIndex++;
-  }
-  query += ` ORDER BY crop_name, category, specification, id;`; // Added id to order for consistent results
-
-  try {
-    const res = await pool.query<MarketPriceEntity>(query, params);
-    return res.rows;
-  } catch (error) {
-    console.error(`[MarketPrice Model] Error finding market prices by date '${date}':`, error);
-    throw new Error('Failed to retrieve market prices from database.');
-  }
-};
-
-
-
-/**
- * Finds the latest market price for a given crop name and optional specification,
- * ordered by date descending.
+ * Finds the latest market price record for a given crop and optional specification.
  * @param cropName The name of the crop.
  * @param specification Optional specification to filter by.
- * @returns A Promise resolving to the latest MarketPriceEntity or null if not found.
+ * @returns A Promise resolving to the latest MarketPriceEntity object, or null if not found.
  */
 export const findLatestMarketPriceByCrop = async (
   cropName: string,
   specification?: string
 ): Promise<MarketPriceEntity | null> => {
   let query = `
-    SELECT * FROM market_prices
+    SELECT *
+    FROM market_prices
     WHERE crop_name ILIKE $1
   `;
   const params: (string | number)[] = [`%${cropName}%`];
@@ -144,10 +100,11 @@ export const findLatestMarketPriceByCrop = async (
   if (specification) {
     query += ` AND specification ILIKE $${paramIndex}`;
     params.push(`%${specification}%`);
+    paramIndex++;
   }
 
   query += `
-    ORDER BY date DESC, id DESC -- Order by date first, then id for stable results
+    ORDER BY date DESC, id DESC
     LIMIT 1;
   `;
 
@@ -155,7 +112,7 @@ export const findLatestMarketPriceByCrop = async (
     const result = await pool.query<MarketPriceEntity>(query, params);
     return result.rows[0] || null;
   } catch (error: any) {
-    console.error(`[MarketPrice Model] Error finding latest market price for crop '${cropName}' (spec: ${specification || 'N/A'}): ${error.message}`);
+    console.error(`[MarketPrice Model] Error retrieving latest price for crop '${cropName}' (spec: ${specification || 'N/A'}): ${error.message}`);
     throw new Error('Database error during latest market price retrieval.');
   }
 };
@@ -183,18 +140,73 @@ export const findHistoricalMarketPricesByCrop = async (
   if (specification) {
     query += ` AND specification ILIKE $${paramIndex}`;
     params.push(`%${specification}%`);
+    paramIndex++;
   }
 
   query += `
     ORDER BY date DESC, id DESC
     LIMIT $${paramIndex};
   `;
+  params.push(limit);
+
 
   try {
     const result = await pool.query<MarketPriceEntity>(query, params);
     return result.rows;
   } catch (error: any) {
-    console.error(`[MarketPrice Model] Error finding historical market prices for crop '${cropName}' (spec: ${specification || 'N/A'}): ${error.message}`);
+    console.error(`[MarketPrice Model] Error retrieving historical prices for crop '${cropName}' (limit: ${limit}):`, error);
     throw new Error('Database error during historical market price retrieval.');
+  }
+};
+
+/**
+ * Finds all market price records for a specific date, with optional filters.
+ * @param date The date to query for (in 'YYYY-MM-DD' format).
+ * @param region Optional region to filter by.
+ * @param cropName Optional crop name to filter by.
+ * @param specification Optional specification to filter by.
+ * @returns A Promise resolving to an array of MarketPriceEntity objects.
+ */
+export const findMarketPricesByDate = async (
+  date: string,
+  region?: string,
+  cropName?: string,
+  specification?: string
+): Promise<MarketPriceEntity[]> => {
+  let query = `
+    SELECT * FROM market_prices
+    WHERE date = $1
+  `;
+  const values = [date];
+  let paramIndex = 2;
+
+  if (region) {
+    query += ` AND region ILIKE $${paramIndex}`;
+    values.push(`%${region}%`);
+    paramIndex++;
+  }
+
+  if (cropName) {
+    query += ` AND crop_name ILIKE $${paramIndex}`;
+    values.push(`%${cropName}%`);
+    paramIndex++;
+  }
+
+  if (specification) {
+    query += ` AND specification ILIKE $${paramIndex}`;
+    values.push(`%${specification}%`);
+    paramIndex++;
+  }
+
+  query += `
+    ORDER BY crop_name ASC, category ASC;
+  `;
+
+  try {
+    const result = await pool.query<MarketPriceEntity>(query, values);
+    return result.rows;
+  } catch (error: any) {
+    console.error(`[MarketPrice Model] Error retrieving market prices for date '${date}':`, error);
+    throw new Error('Database error during price retrieval by date.');
   }
 };

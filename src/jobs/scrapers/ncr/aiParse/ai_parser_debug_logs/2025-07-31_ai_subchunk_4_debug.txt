@@ -1,0 +1,203 @@
+=== RAW LLM TABLE OUTPUT (SUB-CHUNK 4) ===
+Input Type: unstructured
+Potential Records (from LLM): 16
+Inserted Records (after validation): 16
+
+crop_name|category|specification|price|unit
+Imported Beef Loin|Beef||n/a|P/unit
+Local Beef Tongue|Beef||467.50|P/unit
+Imported Beef Tongue|Beef||n/a|P/unit
+Local Buffalo Forequarter|Buffalo|Meat from the front quarter of Buffalo, often used for stewing|n/a|P/unit
+Imported Buffalo Forequarter|Buffalo||300.00|P/unit
+Local Buffalo Trimmings|Buffalo|Leftover meat pieces after primary cuts|n/a|P/unit
+Imported Buffalo Trimmings|Buffalo||n/a|P/unit
+Local Buffalo Meat|Buffalo|Includes hindquarter, steaks, and ground meat|344.00|P/unit
+Imported Buffalo Meat|Buffalo||n/a|P/unit
+Local Pork Picnic Shoulder (Kasim)|Pork|Kasim; The half of the shoulder on the shank side.|372.78|P/unit
+Imported Pork Picnic Shoulder (Kasim)|Pork||261.83|P/unit
+Pork Hind Leg/Pigue (fresh or chilled)|Pork|Pigue; The hind leg is derived from the side of a pork carcass after its attachment to the middle, between the 6th and 7th lumbar vertebrae, is cut and the hind shank and foot is detached at the stifle joint. This excludes the tail.|371.19|P/unit
+Pork Hind Leg/Pigue (frozen)|Pork||249.23|P/unit
+Pork Belly/Liempo (fresh or chilled)|Pork|Liempo; The belly is prepared from the middle by the removal of the loin, cut approximately 2 inches - 3 inches from and parallel to the bodies of the thoracic and lumbar vertebrae.|425.01|P/unit
+Pork Belly/Liempo (frozen)|Pork||315.24|P/unit
+Local Pork Loin|Pork|Lomo; The loin is prepared from the middle by making| |P/unit
+
+
+=== VALIDATED AND PREPARED RECORDS FOR INSERTION (FROM THIS SUB-CHUNK) ===
+[
+  {
+    "crop_name": "Imported Beef Loin",
+    "category": "Beef",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Local Beef Tongue",
+    "category": "Beef",
+    "region": "NCR",
+    "price": 467.5,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Imported Beef Tongue",
+    "category": "Beef",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Local Buffalo Forequarter",
+    "category": "Buffalo",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Meat from the front quarter of Buffalo, often used for stewing"
+  },
+  {
+    "crop_name": "Imported Buffalo Forequarter",
+    "category": "Buffalo",
+    "region": "NCR",
+    "price": 300,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Local Buffalo Trimmings",
+    "category": "Buffalo",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Leftover meat pieces after primary cuts"
+  },
+  {
+    "crop_name": "Imported Buffalo Trimmings",
+    "category": "Buffalo",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Local Buffalo Meat",
+    "category": "Buffalo",
+    "region": "NCR",
+    "price": 344,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Includes hindquarter, steaks, and ground meat"
+  },
+  {
+    "crop_name": "Imported Buffalo Meat",
+    "category": "Buffalo",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Local Pork Picnic Shoulder (Kasim)",
+    "category": "Pork",
+    "region": "NCR",
+    "price": 372.78,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Kasim; The half of the shoulder on the shank side."
+  },
+  {
+    "crop_name": "Imported Pork Picnic Shoulder (Kasim)",
+    "category": "Pork",
+    "region": "NCR",
+    "price": 261.83,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Pork Hind Leg/Pigue (fresh or chilled)",
+    "category": "Pork",
+    "region": "NCR",
+    "price": 371.19,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Pigue; The hind leg is derived from the side of a pork carcass after its attachment to the middle, between the 6th and 7th lumbar vertebrae, is cut and the hind shank and foot is detached at the stifle joint. This excludes the tail."
+  },
+  {
+    "crop_name": "Pork Hind Leg/Pigue (frozen)",
+    "category": "Pork",
+    "region": "NCR",
+    "price": 249.23,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Pork Belly/Liempo (fresh or chilled)",
+    "category": "Pork",
+    "region": "NCR",
+    "price": 425.01,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Liempo; The belly is prepared from the middle by the removal of the loin, cut approximately 2 inches - 3 inches from and parallel to the bodies of the thoracic and lumbar vertebrae."
+  },
+  {
+    "crop_name": "Pork Belly/Liempo (frozen)",
+    "category": "Pork",
+    "region": "NCR",
+    "price": 315.24,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Local Pork Loin",
+    "category": "Pork",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Lomo; The loin is prepared from the middle by making"
+  }
+]

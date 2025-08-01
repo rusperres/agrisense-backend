@@ -102,7 +102,7 @@ export const fetchMarketPrices = async (): Promise<MarketPriceEntity[]> => {
     client = await pool.connect();
 
     const result = await client.query<MarketPriceEntity>(
-      `SELECT * FROM market_prices ORDER BY date DESC, created_at DESC;`
+      `SELECT * FROM market_prices WHERE crop_name != 'UNKNOWN CROP' AND price IS NOT NULL ORDER BY date DESC, id DESC;`
     );
     const marketPrices: MarketPriceEntity[] = result.rows;
 

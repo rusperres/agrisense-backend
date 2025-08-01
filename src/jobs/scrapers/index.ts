@@ -1,13 +1,10 @@
-// src/jobs/scrapers/index.ts
-
 import { NewMarketPrice } from '../../types/entities/marketPrice.entity';
 import { scrapeNcrPrices } from './ncr';
-// import { scrapeRegionXPrices } from './regionX'; // Uncomment when implemented
+// import { scrapeRegionXPrices } from './regionX'; 
 
 export interface RegionalSources {
   ncrPdfPath?: string;
   regionXApiData?: any;
-  // Add other source types as needed for other regions
 }
 
 /**
@@ -21,7 +18,7 @@ export interface RegionalSources {
  * If not provided, all active regions will be scraped.
  * @returns A Promise that resolves to an array of NewMarketPrice objects from the scraped region(s).
  */
-export const initiateRegionalScrape = async ( // <--- RENAMED FROM scrapeRegions
+export const initiateRegionalScrape = async (
   sources: RegionalSources,
   date: string,
   region?: string

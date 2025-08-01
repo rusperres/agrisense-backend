@@ -1,0 +1,227 @@
+=== RAW LLM TABLE OUTPUT (SUB-CHUNK 5) ===
+Input Type: unstructured
+Potential Records (from LLM): 18
+Inserted Records (after validation): 18
+
+crop_name|category|specification|price|unit
+Pork Cut|Pork|a cut approximately 2 inches –3 inches from the body of the thoracic vertebrae, thus, separating the belly.|414.64|P/unit
+Imported Pork Loin|Pork||250.00|P/kg
+Local Pork Fore Shank|Pork|Pata Unahan; The foreshank and foot is prepared from the shoulder by cutting it just above the elbow joint.|335.76|P/unit
+Imported Fore Shank|Pork||188.00|P/unit
+Local Pork Boston Shoulder|Pork|Paypay; The whole shoulder is derived from a side of pork carcass by a cut between the 4th and 5th ribs; the cut is extended ventrally following the contour of the ribs, and dorsally at the junction between the 4th and 5th thoracic vertebrae (backbone).|367.86|P/unit
+Imported Pork Boston Shoulder|Pork||n/a|P/unit
+Local Pork Hind Shank|Pork|Pata Hulihan; The hind shank and foot is prepared from the hind leg by cutting it through the stifle joint (knee joint).|332.42|P/unit
+Imported Pork Hind Shank|Pork||n/a|P/unit
+Local Pork Head|Pork|Ulo; A head is derived from a carcass by cutting through the vertebral column in a straight line through the atlas joint (atlanto occipital joint).|283.75|P/unit
+Imported Pork Head|Pork||n/a|P/unit
+Local Pork Rind/Skin|Pork||100.00|P/unit
+Imported Pork Rind/Skin|Pork||n/a|P/unit
+Pork Chop|Pork|(fresh or chilled)|377.40|P/unit
+Pork Chop|Pork|(frozen)|250.71|P/unit
+Pork Spareribs|Pork|(fresh or chilled)|355.07|P/unit
+Pork Spareribs|Pork|(frozen)|245.00|P/unit
+Local Pork Offals|Pork|Liver, kidneys, intestines|231.72|P/unit
+Imported Pork Offals|Pork||120.00|P/unit
+
+
+=== VALIDATED AND PREPARED RECORDS FOR INSERTION (FROM THIS SUB-CHUNK) ===
+[
+  {
+    "crop_name": "Pork Cut",
+    "category": "Pork",
+    "region": "NCR",
+    "price": 414.64,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "a cut approximately 2 inches –3 inches from the body of the thoracic vertebrae, thus, separating the belly."
+  },
+  {
+    "crop_name": "Imported Pork Loin",
+    "category": "Pork",
+    "region": "NCR",
+    "price": 250,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Local Pork Fore Shank",
+    "category": "Pork",
+    "region": "NCR",
+    "price": 335.76,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Pata Unahan; The foreshank and foot is prepared from the shoulder by cutting it just above the elbow joint."
+  },
+  {
+    "crop_name": "Imported Fore Shank",
+    "category": "Pork",
+    "region": "NCR",
+    "price": 188,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Local Pork Boston Shoulder",
+    "category": "Pork",
+    "region": "NCR",
+    "price": 367.86,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Paypay; The whole shoulder is derived from a side of pork carcass by a cut between the 4th and 5th ribs; the cut is extended ventrally following the contour of the ribs, and dorsally at the junction between the 4th and 5th thoracic vertebrae (backbone)."
+  },
+  {
+    "crop_name": "Imported Pork Boston Shoulder",
+    "category": "Pork",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Local Pork Hind Shank",
+    "category": "Pork",
+    "region": "NCR",
+    "price": 332.42,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Pata Hulihan; The hind shank and foot is prepared from the hind leg by cutting it through the stifle joint (knee joint)."
+  },
+  {
+    "crop_name": "Imported Pork Hind Shank",
+    "category": "Pork",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Local Pork Head",
+    "category": "Pork",
+    "region": "NCR",
+    "price": 283.75,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Ulo; A head is derived from a carcass by cutting through the vertebral column in a straight line through the atlas joint (atlanto occipital joint)."
+  },
+  {
+    "crop_name": "Imported Pork Head",
+    "category": "Pork",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Local Pork Rind/Skin",
+    "category": "Pork",
+    "region": "NCR",
+    "price": 100,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Imported Pork Rind/Skin",
+    "category": "Pork",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Pork Chop",
+    "category": "Pork",
+    "region": "NCR",
+    "price": 377.4,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "(fresh or chilled)"
+  },
+  {
+    "crop_name": "Pork Chop",
+    "category": "Pork",
+    "region": "NCR",
+    "price": 250.71,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "(frozen)"
+  },
+  {
+    "crop_name": "Pork Spareribs",
+    "category": "Pork",
+    "region": "NCR",
+    "price": 355.07,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "(fresh or chilled)"
+  },
+  {
+    "crop_name": "Pork Spareribs",
+    "category": "Pork",
+    "region": "NCR",
+    "price": 245,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "(frozen)"
+  },
+  {
+    "crop_name": "Local Pork Offals",
+    "category": "Pork",
+    "region": "NCR",
+    "price": 231.72,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Liver, kidneys, intestines"
+  },
+  {
+    "crop_name": "Imported Pork Offals",
+    "category": "Pork",
+    "region": "NCR",
+    "price": 120,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  }
+]

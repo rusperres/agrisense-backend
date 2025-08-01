@@ -1,8 +1,7 @@
 import { Pool } from 'pg';
-import { DB_URL } from './env';
 
 export const pool = new Pool({
-  connectionString: DB_URL,
+  connectionString: process.env.DB_URL,
 });
 
 export const connectDB = async () => {

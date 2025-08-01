@@ -1,0 +1,203 @@
+=== RAW LLM TABLE OUTPUT (SUB-CHUNK 2) ===
+Input Type: unstructured
+Potential Records (from LLM): 16
+Inserted Records (after validation): 16
+
+crop_name|category|specification|price|unit
+Yellow-Fin Tuna|Fishery|(frozen)|n/a|P/unit
+Beef Rump|Livestock & Poultry|Local Tapadera; The rump is composed of the last loin bone, hip bone, sacrum, muscles and other tissues.|462.44|P/unit
+Beef Rump|Livestock & Poultry|Imported|n/a|P/unit
+Beef Brisket|Livestock & Poultry|Local Punta y pecho; The point end brisket is composed of the sternum, five ribs, muscles and other tissues. It is separated from the forequarter by the removal of the neck cranially, the chuck dorsally, and the plate caudally. This is the chest of the carcass.|400.11|P/unit
+Beef Brisket|Livestock & Poultry|Imported|n/a|P/unit
+Buffalo Rump Steak|Livestock & Poultry|Local Cut from the hindquarter, known for leanness and flavor|420.00|P/unit
+Buffalo Rump Steak|Livestock & Poultry|Imported|n/a|P/unit
+Beef Chuck|Livestock & Poultry|Local Kadera sa Unahan; The chuck is composed of the first five backbones, first five ribs, muscles and other tissues, commonly used for stews and ground beef.|386.90|P/unit
+Beef Chuck|Livestock & Poultry|Imported|360.00|P/unit
+Beef Sirloin|Livestock & Poultry|Local Cut from the back of the cow, known for tenderness and versatility|456.00|P/unit
+Beef Sirloin|Livestock & Poultry|Imported|n/a|P/unit
+Beef Tenderloin|Livestock & Poultry|Local The most tender cut, often used for steaks|617.81|P/unit
+Beef Tenderloin|Livestock & Poultry|Imported|n/a|P/unit
+Beef Striploin|Livestock & Poultry|Local Cut from the short loin, ideal for grilling|459.17|P/unit
+Beef Striploin|Livestock & Poultry|Imported|460.00|P/unit
+Beef Flank|Livestock & Poultry|Local Kamto; The flank is composed of a rib, muscles| |P/unit
+
+
+=== VALIDATED AND PREPARED RECORDS FOR INSERTION (FROM THIS SUB-CHUNK) ===
+[
+  {
+    "crop_name": "Yellow-Fin Tuna",
+    "category": "Fishery",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "(frozen)"
+  },
+  {
+    "crop_name": "Beef Rump",
+    "category": "Livestock & Poultry",
+    "region": "NCR",
+    "price": 462.44,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Local Tapadera; The rump is composed of the last loin bone, hip bone, sacrum, muscles and other tissues."
+  },
+  {
+    "crop_name": "Beef Rump",
+    "category": "Livestock & Poultry",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Imported"
+  },
+  {
+    "crop_name": "Beef Brisket",
+    "category": "Livestock & Poultry",
+    "region": "NCR",
+    "price": 400.11,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Local Punta y pecho; The point end brisket is composed of the sternum, five ribs, muscles and other tissues. It is separated from the forequarter by the removal of the neck cranially, the chuck dorsally, and the plate caudally. This is the chest of the carcass."
+  },
+  {
+    "crop_name": "Beef Brisket",
+    "category": "Livestock & Poultry",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Imported"
+  },
+  {
+    "crop_name": "Buffalo Rump Steak",
+    "category": "Livestock & Poultry",
+    "region": "NCR",
+    "price": 420,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Local Cut from the hindquarter, known for leanness and flavor"
+  },
+  {
+    "crop_name": "Buffalo Rump Steak",
+    "category": "Livestock & Poultry",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Imported"
+  },
+  {
+    "crop_name": "Beef Chuck",
+    "category": "Livestock & Poultry",
+    "region": "NCR",
+    "price": 386.9,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Local Kadera sa Unahan; The chuck is composed of the first five backbones, first five ribs, muscles and other tissues, commonly used for stews and ground beef."
+  },
+  {
+    "crop_name": "Beef Chuck",
+    "category": "Livestock & Poultry",
+    "region": "NCR",
+    "price": 360,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Imported"
+  },
+  {
+    "crop_name": "Beef Sirloin",
+    "category": "Livestock & Poultry",
+    "region": "NCR",
+    "price": 456,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Local Cut from the back of the cow, known for tenderness and versatility"
+  },
+  {
+    "crop_name": "Beef Sirloin",
+    "category": "Livestock & Poultry",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Imported"
+  },
+  {
+    "crop_name": "Beef Tenderloin",
+    "category": "Livestock & Poultry",
+    "region": "NCR",
+    "price": 617.81,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Local The most tender cut, often used for steaks"
+  },
+  {
+    "crop_name": "Beef Tenderloin",
+    "category": "Livestock & Poultry",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Imported"
+  },
+  {
+    "crop_name": "Beef Striploin",
+    "category": "Livestock & Poultry",
+    "region": "NCR",
+    "price": 459.17,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Local Cut from the short loin, ideal for grilling"
+  },
+  {
+    "crop_name": "Beef Striploin",
+    "category": "Livestock & Poultry",
+    "region": "NCR",
+    "price": 460,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Imported"
+  },
+  {
+    "crop_name": "Beef Flank",
+    "category": "Livestock & Poultry",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Local Kamto; The flank is composed of a rib, muscles"
+  }
+]

@@ -6,7 +6,8 @@ import axios from 'axios'; // For making HTTP requests to APIs (e.g., for Region
 import { initiateRegionalScrape, RegionalSources } from './scrapers/index'; // Import the main scraper orchestrator AND RegionalSources type
 import { saveMarketPrices } from '../services/marketPrice.service'; // Import service to save data
 import { downloadPdf } from './scrapers/utils/pdfDownloader'; // Import the PDF downloader utility
-import { env } from '../config/env'; // Import env to get source URLs
+import { NCR_DA_PDF_BASE_URL /*, REGION_X_API_URL */ } from '../config/env'; // Import env to get source URLs
+import { extractLatestDailyPriceIndexPdfLink } from './scrapers/utils/pdfLinkExtractor'; // NEW: Import the PDF link extractor
 
 /**
  * This job is responsible for daily scraping of market prices from various regions.
@@ -42,33 +43,39 @@ export const runPriceScraperJob = async () => {
   const regionalSources: RegionalSources = {};
 
   try {
-    // --- Acquire Source for NCR (Download PDF) ---
-    // Construct the filename using the dynamically determined date components
-    const ncrPdfFileName = `Daily-Price-Index-${monthName}-${day}-${year}.pdf`;
-    // Construct the URL using the dynamically determined date components and base URL from env
-    const NCR_PDF_URL = `${env.NCR_DA_PDF_BASE_URL}${year}/${monthNumber}/${ncrPdfFileName}`;
+    // --- Acquire Source for NCR (Dynamically find and download PDF) ---
+    // The NCR_DA_PDF_BASE_URL now points to the price monitoring page
+    const priceMonitoringPageUrl = NCR_DA_PDF_BASE_URL;
 
-    console.log(`[PRICE SCRAPER JOB] Attempting to download NCR PDF from: ${NCR_PDF_URL}`);
-    try {
-      downloadedNcrPdfPath = await downloadPdf(NCR_PDF_URL, pdfsDirectory, ncrPdfFileName);
-      console.log(`[PRICE SCRAPER JOB] NCR PDF downloaded successfully to: ${downloadedNcrPdfPath}`);
-      regionalSources.ncrPdfPath = downloadedNcrPdfPath;
-    } catch (pdfError: any) {
-      console.error(`[PRICE SCRAPER JOB] Error downloading NCR PDF: ${pdfError.message}`);
-      if (pdfError.isAxiosError && pdfError.response && pdfError.response.status === 404) {
-        console.warn(`[PRICE SCRAPER JOB] NCR PDF for ${formattedScrapeDate} not found. Skipping NCR scrape.`);
-      } else {
-        // Log other types of errors during PDF download explicitly
-        console.error(`[PRICE SCRAPER JOB] Unexpected error during NCR PDF download:`, pdfError);
+    console.log(`[PRICE SCRAPER JOB] Attempting to find NCR PDF link from: ${priceMonitoringPageUrl}`);
+    const NCR_PDF_URL = await extractLatestDailyPriceIndexPdfLink(priceMonitoringPageUrl);
+
+    if (NCR_PDF_URL) {
+      // Extract filename from the dynamically found URL for saving
+      const ncrPdfFileName = path.basename(NCR_PDF_URL);
+      console.log(`[PRICE SCRAPER JOB] Found PDF link: ${NCR_PDF_URL}. Attempting to download with filename: ${ncrPdfFileName}`);
+      try {
+        downloadedNcrPdfPath = await downloadPdf(NCR_PDF_URL, pdfsDirectory, ncrPdfFileName);
+        console.log(`[PRICE SCRAPER JOB] NCR PDF downloaded successfully to: ${downloadedNcrPdfPath}`);
+        regionalSources.ncrPdfPath = downloadedNcrPdfPath;
+      } catch (pdfDownloadError: any) {
+        console.error(`[PRICE SCRAPER JOB] Error downloading NCR PDF from extracted link: ${pdfDownloadError.message}`);
+        if (pdfDownloadError.isAxiosError && pdfDownloadError.response && pdfDownloadError.response.status === 404) {
+          console.warn(`[PRICE SCRAPER JOB] Downloaded PDF link for ${formattedScrapeDate} returned 404. Skipping NCR scrape.`);
+        } else {
+          console.error(`[PRICE SCRAPER JOB] Unexpected error during NCR PDF download from extracted link:`, pdfDownloadError);
+        }
       }
+    } else {
+      console.warn('[PRICE SCRAPER JOB] Could not find the latest Daily Price Index PDF link. Skipping NCR scrape.');
     }
 
     // --- Acquire Source for Region X (Hypothetical: Fetch from API) ---
-    // This section is commented out in your original code, keeping it that way.
-    // if (env.REGION_X_API_URL) {
-    //   console.log(`[PRICE SCRAPER JOB] Attempting to fetch data for Region X from API: ${env.REGION_X_API_URL}`);
+    // This section remains commented out as per your original code.
+    // if (REGION_X_API_URL) {
+    //   console.log(`[PRICE SCRAPER JOB] Attempting to fetch data for Region X from API: ${REGION_X_API_URL}`);
     //   try {
-    //     const response = await axios.get(env.REGION_X_API_URL);
+    //     const response = await axios.get(REGION_X_API_URL);
     //     regionXApiData = response.data;
     //     regionalSources.regionXApiData = regionXApiData;
     //     console.log(`[PRICE SCRAPER JOB] Region X API data fetched successfully.`);

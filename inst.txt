@@ -1,0 +1,66 @@
+Evaluate lacking routes
+----Check if project needs routes for:
+----Buyer
+----Seller/farmer - will need but 
+----I have routes for admin, auth, and farmer moderation but no dedicated routes for CRUDing buyers or maybe a unified user route for CRUDing all users considering all roles
+Evaluate redundant types
+----Crop Moderation uses cropListing.entity.ts but product.entity.ts also exist and maybe it is better for them to be one, just like how 
+----User entity is shared by admin, auth and farmer moderation
+Final Integrations
+----Integrate Analysis algorithms
+--------GET /market-intelligence/crop-demand
+------------Goal: Provide demand insights per crop by analyzing recent buyer activity.
+------------This includes:
+------------Total orders (quantity sold)
+------------• Demand level classification (High, Medium, Low)
+------------• Demand trend (Increasing, Decreasing, Stable)
+------------Logic: 1. Measure demand as the total quantity of a crop sold in a given period. 2. Compare demand over two periods:
+------------• Current: last 30 days
+------------• Previous: 31–60 days ago 3. Classify demand level:
+------------• High (≥50 units sold), Medium (20–49 units sold), Low (<20 units sold) 4. Determine trend:
+------------• Increasing (↑15%), Decreasing (↓15%), Stable (±15%)
+------------Data:
+------------• OrderEntity
+------------• ProductEntity
+--------GET /market-intelligence/price-trends
+------------Goal:    Track average crop prices over the past 5 months for trend visualization.
+------------Logic:
+------------• Group by price data by month and crop
+------------• Compute monthly average price for each crop
+------------• Sort by crop and time
+------------Data:
+------------• MarketPriceEntity
+--------GET /market-intelligence/recommendations
+------------Goal: Recommend crops with high buyer demand but low available seller stock.
+------------Logic:
+------------• Identify crops with:  High demand (≥50 units sold in last 30 days) and Low stock (e.g. < 10 units active for sale)
+------------• Useful for planting/growing decisions
+------------Data:
+------------• OrderEntity
+------------• ProductEntity
+----Integrate Geofencing
+--------GET /geofencing/nearby-crops?lat=...&lng=...&radius=...
+------------Goal: List crops near user’s location
+--------GET /geofencing/nearby-sellers?lat=...&lng=...&radius=...
+------------Goal: List sellers near user’s location
+
+
+
+Refine Jobs - ensure all jobs are scheduled properly 
+----Data Scraping
+--------Test both aiParse and structured data parse
+--------Will need to restructure according to test results
+----SMS
+--------Ensure that SMS are properly sent and are logged
+--------Currently using Semaphore, will change to PhilSMS if Sender Name is still not aproved but infrastructure for Semaphore is already created, this will be low priority
+
+Adjust frontend
+----Integrate Map, already exists in a separate repo and contains geofencing filter logic but still have not integrated geofencing functions from backend
+----Some data sent to the backend may need to be adjusted because types used in stores have been modified
+Reorganize
+----Type files and names
+----Envs
+Test
+----All API using postman
+----All API using frontend (will probably need to adjust it a bit)
+Deploy final product

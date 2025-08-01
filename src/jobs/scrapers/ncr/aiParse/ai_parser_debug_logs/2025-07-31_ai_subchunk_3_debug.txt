@@ -1,0 +1,168 @@
+=== RAW LLM TABLE OUTPUT (SUB-CHUNK 3) ===
+Input Type: unstructured
+Potential Records (from LLM): 14
+Inserted Records (after validation): 13
+
+crop_name|category|specification|price|unit
+Imported Beef Flank|||376.67|P/UNIT
+Local Beef Rib Eye|Beef|From the rib section, prized for marbling and flavor|426.00|P/UNIT
+Imported Beef Rib Eye|Beef| |n/a|P/UNIT
+Local Beef Forequarter|Beef|The forequarter is the anterior portion of the beef side which is separated from the hindquarter by a cut usually passing between the 12th and 13th ribs.|360.00|P/UNIT
+Imported Beef Forequarter|Beef||n/a|P/UNIT
+Local Beef Fore Limb|Beef|Paypay at Kenchi sa Unahan; The front limb is composed of the shoulder blade, arm, and front shank bones, muscles and other tissues.|444.00|P/UNIT
+Imported Beef Fore Limb|Beef||n/a|P/UNIT
+Local Beef Rib Set|Beef|Kadera sa Hulihan; The rib set is composed of the last seven back (thoracic) bones, seven ribs, muscles and other tissues.|396.00|P/UNIT
+Imported Beef Rib Set|Beef||n/a|P/UNIT
+Local Short Ribs|Beef||413.13|P/UNIT
+Imported Short Ribs|Beef||n/a|P/UNIT
+Local Beef Plate|Beef|Tadyang; The plate is composed of the last seven ribs, navel end brisket, muscles, and other tissues.|391.33|P/UNIT
+Imported Beef Plate|Beef||n/a|P/UNIT
+Local Beef Loin|Beef|Tagiliran; The loin is composed of the last backbone, first five loin bones, muscles and other tissues. The tenderloin is or may be separated first from|n/a|P/UNIT
+
+
+=== VALIDATED AND PREPARED RECORDS FOR INSERTION (FROM THIS SUB-CHUNK) ===
+[
+  {
+    "crop_name": "Local Beef Rib Eye",
+    "category": "Beef",
+    "region": "NCR",
+    "price": 426,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "From the rib section, prized for marbling and flavor"
+  },
+  {
+    "crop_name": "Imported Beef Rib Eye",
+    "category": "Beef",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Local Beef Forequarter",
+    "category": "Beef",
+    "region": "NCR",
+    "price": 360,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "The forequarter is the anterior portion of the beef side which is separated from the hindquarter by a cut usually passing between the 12th and 13th ribs."
+  },
+  {
+    "crop_name": "Imported Beef Forequarter",
+    "category": "Beef",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Local Beef Fore Limb",
+    "category": "Beef",
+    "region": "NCR",
+    "price": 444,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Paypay at Kenchi sa Unahan; The front limb is composed of the shoulder blade, arm, and front shank bones, muscles and other tissues."
+  },
+  {
+    "crop_name": "Imported Beef Fore Limb",
+    "category": "Beef",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Local Beef Rib Set",
+    "category": "Beef",
+    "region": "NCR",
+    "price": 396,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Kadera sa Hulihan; The rib set is composed of the last seven back (thoracic) bones, seven ribs, muscles and other tissues."
+  },
+  {
+    "crop_name": "Imported Beef Rib Set",
+    "category": "Beef",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Local Short Ribs",
+    "category": "Beef",
+    "region": "NCR",
+    "price": 413.13,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Imported Short Ribs",
+    "category": "Beef",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Local Beef Plate",
+    "category": "Beef",
+    "region": "NCR",
+    "price": 391.33,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Tadyang; The plate is composed of the last seven ribs, navel end brisket, muscles, and other tissues."
+  },
+  {
+    "crop_name": "Imported Beef Plate",
+    "category": "Beef",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Local Beef Loin",
+    "category": "Beef",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Tagiliran; The loin is composed of the last backbone, first five loin bones, muscles and other tissues. The tenderloin is or may be separated first from"
+  }
+]

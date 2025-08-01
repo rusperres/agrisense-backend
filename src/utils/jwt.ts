@@ -1,7 +1,6 @@
 import jwt, { SignOptions, JwtPayload } from 'jsonwebtoken';
 import { JWT_SECRET } from '../config/env';
 
-
 export const signToken = (
   payload: string | object | Buffer,
   expiresIn: SignOptions['expiresIn'] = '7d'

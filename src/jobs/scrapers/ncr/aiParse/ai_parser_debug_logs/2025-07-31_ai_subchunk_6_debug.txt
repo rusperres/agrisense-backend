@@ -1,0 +1,389 @@
+=== RAW LLM TABLE OUTPUT (SUB-CHUNK 6) ===
+Input Type: unstructured
+Potential Records (from LLM): 30
+Inserted Records (after validation): 30
+
+crop_name|category|specification|price|unit
+Lamb Meat|Meat|Shoulder, legs, chops, and
+ground lamb|n/a|P/kg
+Whole Chicken|Chicken|Magnolia|228.54|P/kg
+Whole Chicken|Chicken|Bounty Fresh|230.00|P/kg
+Whole Chicken|Chicken|In-house Brand|200.00|P/kg
+Whole Chicken|Chicken|unbranded, fresh|221.46|P/kg
+Chicken Wing|Chicken|produced by separating the
+wing from the whole bird at
+the joint in between the
+humerus and the
+backbone. It includes the
+entirewing with all muscle
+and skin tissue intact;
+Magnolia|238.49|P/kg
+Chicken Wing|Chicken|Bounty Fresh|240.00|P/kg
+Chicken Wing|Chicken|In-house Brand|240.00|P/kg
+Chicken Wing|Chicken|unbranded, fresh|239.12|P/kg
+Chicken Wing|Chicken|Imported|256.67|P/kg
+Chicken Breast|Chicken|consist of a half breast and
+a portion of the back
+without a wing; Magnolia|235.41|P/kg
+Chicken Breast|Chicken|Bounty Fresh|240.00|P/kg
+Chicken Breast|Chicken|In-house Brand|233.75|P/kg
+Chicken Breast|Chicken|unbranded, fresh|233.56|P/kg
+Chicken Breast|Chicken|Imported|n/a|P/kg
+Chicken Drumstick|Chicken|Magnolia|236.91|P/kg
+Chicken Drumstick|Chicken|Bounty Fresh|255.00|P/kg
+Chicken Drumstick|Chicken|In-house Brand|233.33|P/kg
+Chicken Drumstick|Chicken|unbranded, fresh|235.96|P/kg
+Chicken Drumstick|Chicken|Imported|n/a|P/kg
+Chicken Leg quarter|Chicken|Magnolia|239.75|P/kg
+Chicken Leg quarter|Chicken|Bounty Fresh|250.00|P/kg
+Chicken Leg quarter|Chicken|In-house Brand|220.00|P/kg
+Chicken Leg quarter|Chicken|unbranded, fresh|233.25|P/kg
+Chicken Leg quarter|Chicken|Imported|n/a|P/kg
+Local Chicken Thigh|Chicken||232.00|P/kg
+Imported Chicken Thigh|Chicken||n/a|P/kg
+Local Chicken Neck|Chicken|consists of the neck bones
+with attached meat and
+skin.|147.23|P/kg
+Imported Chicken Neck|Chicken||n/a|P/kg
+Local Chicken Feet|Chicken||151.57|P/kg
+Imported Chicken Feet|Chicken||n/a|P/kg
+Local Chicken Liver|Chicken||228.66|P/kg
+Imported Chicken Liver|Chicken||n/a|P/kg
+Local Chicken Rind/Skin|Chicken|Chicken Skin, often used
+for rendering or snacks|150.00|P/kg
+Imported Chicken Rind/Skin|Chicken||n/a|P/kg
+
+
+=== VALIDATED AND PREPARED RECORDS FOR INSERTION (FROM THIS SUB-CHUNK) ===
+[
+  {
+    "crop_name": "Whole Chicken",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 228.54,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Magnolia"
+  },
+  {
+    "crop_name": "Whole Chicken",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 230,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Bounty Fresh"
+  },
+  {
+    "crop_name": "Whole Chicken",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 200,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "In-house Brand"
+  },
+  {
+    "crop_name": "Whole Chicken",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 221.46,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "unbranded, fresh"
+  },
+  {
+    "crop_name": "Chicken Wing",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 240,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Bounty Fresh"
+  },
+  {
+    "crop_name": "Chicken Wing",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 240,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "In-house Brand"
+  },
+  {
+    "crop_name": "Chicken Wing",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 239.12,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "unbranded, fresh"
+  },
+  {
+    "crop_name": "Chicken Wing",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 256.67,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Imported"
+  },
+  {
+    "crop_name": "Chicken Breast",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 240,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Bounty Fresh"
+  },
+  {
+    "crop_name": "Chicken Breast",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 233.75,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "In-house Brand"
+  },
+  {
+    "crop_name": "Chicken Breast",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 233.56,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "unbranded, fresh"
+  },
+  {
+    "crop_name": "Chicken Breast",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Imported"
+  },
+  {
+    "crop_name": "Chicken Drumstick",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 236.91,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Magnolia"
+  },
+  {
+    "crop_name": "Chicken Drumstick",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 255,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Bounty Fresh"
+  },
+  {
+    "crop_name": "Chicken Drumstick",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 233.33,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "In-house Brand"
+  },
+  {
+    "crop_name": "Chicken Drumstick",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 235.96,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "unbranded, fresh"
+  },
+  {
+    "crop_name": "Chicken Drumstick",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Imported"
+  },
+  {
+    "crop_name": "Chicken Leg quarter",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 239.75,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Magnolia"
+  },
+  {
+    "crop_name": "Chicken Leg quarter",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 250,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Bounty Fresh"
+  },
+  {
+    "crop_name": "Chicken Leg quarter",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 220,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "In-house Brand"
+  },
+  {
+    "crop_name": "Chicken Leg quarter",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 233.25,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "unbranded, fresh"
+  },
+  {
+    "crop_name": "Chicken Leg quarter",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Imported"
+  },
+  {
+    "crop_name": "Local Chicken Thigh",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 232,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Imported Chicken Thigh",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Imported Chicken Neck",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Local Chicken Feet",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 151.57,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Imported Chicken Feet",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Local Chicken Liver",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": 228.66,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Imported Chicken Liver",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Imported Chicken Rind/Skin",
+    "category": "Chicken",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  }
+]

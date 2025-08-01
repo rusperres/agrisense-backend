@@ -9,81 +9,175 @@ import { UserRole, VerificationStatus } from '../types/enums';
 import { DBLocation, Location, LocationResponse } from '../types/location';
 import { signToken } from '../utils/jwt';
 import { EWalletDetails, EWalletUpdateRequestDTO } from '../types/ewallet';
+import { fromDBLocation } from './utils/location.map';
+import { SellerVerificationRequestDTO } from '../types/dtos/verification.dto';
 
-function fromDBLocation(dbLocation: DBLocation | null): Location | null {
-    if (!dbLocation || !dbLocation.coordinates || dbLocation.coordinates.length < 2) {
+
+const mapDBLocationToFrontendLocation = (dbLocation: any | null): Location | null => {
+    if (!dbLocation) {
         return null;
     }
-    return {
-        lat: dbLocation.coordinates[1],
-        lng: dbLocation.coordinates[0],
-        address: dbLocation.properties?.address || null
-    };
-}
 
-// Helper function to map entities to UserResponseDTO
-async function mapUserAndRoleEntityToUserResponseDTO(
-    userEntity: UserEntity,
-    roleEntity?: SellerEntity | BuyerEntity | AdminEntity
-): Promise<UserResponseDTO> {
-    // 1. Map common fields to LocationResponse
-    const mappedLocation: LocationResponse | null = userEntity.location ? {
-        lat: userEntity.location.coordinates[1],
-        lng: userEntity.location.coordinates[0],
-        address: userEntity.location.properties?.address || 'N/A'
-    } : null;
-
-    // 2. Create the base user DTO object, strictly typed as BaseUserResponseDTO
-    const baseUserDTO: BaseUserResponseDTO = {
-        id: String(userEntity.id),
-        name: userEntity.name,
-        email: userEntity.email || '',
-        phone: userEntity.phone,
-        avatar: userEntity.avatar,
-        role: userEntity.role,
-        location: mappedLocation,
-        createdAt: userEntity.created_at,
-        updatedAt: userEntity.updated_at,
-        eWalletDetails: userEntity.eWalletDetails,
-    };
-
-    // 3. Conditionally build the specific role DTO using the baseUserDTO
-    let finalUserResponse: UserResponseDTO;
-
-    if (userEntity.role === UserRole.Seller) {
-        const seller = roleEntity as SellerEntity;
-
-        const sellerResponse: SellerResponseDTO = {
-            ...baseUserDTO,
-            isVerified: seller.is_verified,
-            businessName: seller.business_name,
-            verificationStatus: seller.verification_status || VerificationStatus.Pending,
-            credentials: seller.credentials || { documents: [], businessLicense: null, farmCertificate: null, governmentId: '' },
-            rating: seller.rating,
-            reviewCount: seller.review_count,
-            totalSales: seller.total_sales,
-        };
-        finalUserResponse = sellerResponse;
-    } else if (userEntity.role === UserRole.Buyer) {
-        const buyer = roleEntity as BuyerEntity;
-
-        const buyerResponse: BuyerResponseDTO = {
-            ...baseUserDTO,
-            purchaseHistory: buyer.purchase_history || [],
-            favoriteProducts: buyer.favorite_products || [],
-        };
-        finalUserResponse = buyerResponse;
-    } else if (userEntity.role === UserRole.Admin) {
-        const adminResponse: AdminResponseDTO = {
-            ...baseUserDTO,
-        };
-        finalUserResponse = adminResponse;
-    } else {
-        finalUserResponse = baseUserDTO;
+    // Ensure dbLocation is an object if it was stored as JSON string
+    let parsedLocation = dbLocation;
+    if (typeof dbLocation === 'string') {
+        try {
+            parsedLocation = JSON.parse(dbLocation);
+        } catch (e) {
+            console.error("Error parsing location JSON:", e);
+            return null;
+        }
     }
 
-    return finalUserResponse;
-}
+    // Check if coordinates and properties exist before accessing
+    if (parsedLocation && parsedLocation.coordinates && Array.isArray(parsedLocation.coordinates) && parsedLocation.coordinates.length >= 2) {
+        return {
+            lat: parsedLocation.coordinates[1], // Latitude is typically second in [lng, lat]
+            lng: parsedLocation.coordinates[0], // Longitude is typically first in [lng, lat]
+            address: parsedLocation.properties?.address || 'Unknown Address'
+        };
+    }
+    return null;
+};
+
+// Helper function to map entities to UserResponseDTO
+export const mapUserAndRoleEntityToUserResponseDTO = (
+    userEntity: UserEntity,
+    roleSpecificEntity?: SellerEntity | BuyerEntity | AdminEntity
+): UserResponseDTO => {
+
+    let mappedLocation: Location | null = null;
+    // Assuming the location is now fetched as 'location_geojson' which is a JSON string or null
+    const rawGeoJsonString = (userEntity as any).location_geojson;
+
+    // Safely parse the GeoJSON string from the DB before passing to fromDBLocation
+    if (rawGeoJsonString !== null && typeof rawGeoJsonString === 'string') {
+        try {
+            const processedLocation: DBLocation = JSON.parse(rawGeoJsonString) as DBLocation;
+            mappedLocation = fromDBLocation(processedLocation);
+        } catch (e) {
+            console.error("Error parsing GeoJSON string from DB (ST_AsGeoJSON output expected):", rawGeoJsonString, e);
+            // mappedLocation remains null
+        }
+    } else if (rawGeoJsonString !== null && typeof rawGeoJsonString === 'object') {
+        // In some cases, if the driver auto-parses JSONB, it might already be an object.
+        // Or if location was originally JSONB, it might be returned as object.
+        // If it's an object, directly pass it to fromDBLocation assuming it's DBLocation.
+        mappedLocation = fromDBLocation(rawGeoJsonString as DBLocation);
+    }
+    // If rawGeoJsonString is null or undefined, mappedLocation correctly remains null
+
+
+    const baseUser: BaseUserResponseDTO = {
+        id: userEntity.id,
+        email: userEntity.email || '',
+        phone: userEntity.phone,
+        name: userEntity.name,
+        role: userEntity.role,
+        location: mappedLocation, // Use the safely mapped location
+        avatar: userEntity.avatar || undefined,
+        createdAt: userEntity.created_at, // Ensure consistency with DB column name
+        updatedAt: userEntity.updated_at, // Ensure consistency with DB column name
+        eWalletDetails: userEntity.eWalletDetails // Ensure consistency with DB column name
+    };
+
+    if (userEntity.role === UserRole.Seller && roleSpecificEntity) {
+        const sellerEntity = roleSpecificEntity as SellerEntity;
+        const seller: SellerResponseDTO = {
+            ...baseUser,
+            businessName: sellerEntity.business_name || '',
+            isVerified: sellerEntity.is_verified,
+            verificationStatus: sellerEntity.verification_status,
+            credentials: sellerEntity.credentials,
+            rating: sellerEntity.rating,
+            reviewCount: sellerEntity.review_count,
+            totalSales: sellerEntity.total_sales,
+        };
+        return seller;
+    } else if (userEntity.role === UserRole.Buyer && roleSpecificEntity) {
+        const buyerEntity = roleSpecificEntity as BuyerEntity;
+        const buyer: BuyerResponseDTO = {
+            ...baseUser,
+            purchaseHistory: buyerEntity.purchase_history || [],
+            favoriteProducts: buyerEntity.favorite_products || [],
+        };
+        return buyer;
+    } else if (userEntity.role === UserRole.Admin && roleSpecificEntity) {
+        // Admin type directly extends BaseUser, so no extra properties from entity currently
+        const admin: AdminResponseDTO = {
+            ...baseUser,
+            // Add any admin-specific properties here if they exist in AdminEntity
+        };
+        return admin;
+    } else {
+        return baseUser;
+    }
+};
+
+/**
+ * Fetches a complete user profile by ID, including role-specific details.
+ * @param userId The ID of the user to fetch.
+ * @returns A Promise that resolves to the complete UserResponseDTO.
+ */
+export const fetchUserProfileById = async (userId: string): Promise<UserResponseDTO> => {
+    let client: PoolClient | null = null;
+    try {
+        client = await pool.connect();
+        await client.query('BEGIN'); // Start transaction
+
+        // 1. Fetch the base user entity
+        const userResult = await client.query<UserEntity>(
+            `SELECT * FROM users WHERE id = $1;`,
+            [userId]
+        );
+
+        if (userResult.rows.length === 0) {
+            throw new Error('User not found.');
+        }
+
+        const baseUserEntity: UserEntity = userResult.rows[0];
+
+        // 2. Fetch role-specific data based on user role
+        let roleSpecificEntity: SellerEntity | BuyerEntity | AdminEntity | undefined;
+        if (baseUserEntity.role === UserRole.Seller) {
+            const sellerResult = await client.query<SellerEntity>(
+                `SELECT * FROM sellers WHERE user_id = $1;`,
+                [userId]
+            );
+            roleSpecificEntity = sellerResult.rows[0];
+        } else if (baseUserEntity.role === UserRole.Buyer) {
+            const buyerResult = await client.query<BuyerEntity>(
+                `SELECT * FROM buyers WHERE user_id = $1;`,
+                [userId]
+            );
+            roleSpecificEntity = buyerResult.rows[0];
+        } else if (baseUserEntity.role === UserRole.Admin) {
+            const adminResult = await client.query<AdminEntity>(
+                `SELECT * FROM admins WHERE user_id = $1;`,
+                [userId]
+            );
+            roleSpecificEntity = adminResult.rows[0];
+        }
+
+        // 3. Map to UserResponseDTO using a helper function (if you have one, otherwise inline)
+        const userResponseDTO = mapUserAndRoleEntityToUserResponseDTO(baseUserEntity, roleSpecificEntity);
+
+        await client.query('COMMIT'); // Commit transaction
+        return userResponseDTO;
+
+    } catch (error: any) {
+        if (client) {
+            await client.query('ROLLBACK'); // Rollback on error
+        }
+        console.error('Error fetching user profile by ID:', error);
+        throw new Error(error.message || 'Failed to fetch user profile.');
+    } finally {
+        if (client) {
+            client.release();
+        }
+    }
+};
+
 
 // Register a new user
 export const registerUser = async (userData: CreateUserDTO): Promise<LoginResponseDTO> => {
@@ -109,10 +203,13 @@ export const registerUser = async (userData: CreateUserDTO): Promise<LoginRespon
         const initialAvatar: string | null = null;
 
         // 1. Insert into `users` table
-        const userTableResult = await client.query<UserEntity>(
+        // Use ST_GeomFromGeoJSON to insert the GeoJSON string into a GEOMETRY column,
+        // then cast to GEOGRAPHY.
+        // Use ST_AsGeoJSON(location)::text to retrieve the GEOGRAPHY as a GeoJSON string
+        const userTableResult = await client.query<any>( // Use 'any' to handle the extra 'location_geojson_text' field
             `INSERT INTO users (name, phone, email, password, role, avatar, location, created_at, updated_at, ewallet_details)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW(), $8)
-             RETURNING *`,
+             VALUES ($1, $2, $3, $4, $5, $6, ST_SetSRID(ST_GeomFromGeoJSON($7), 4326)::geography, NOW(), NOW(), $8)
+             RETURNING *, ST_AsGeoJSON(location)::text AS location_geojson_text`,
             [
                 userData.name,
                 userData.phone,
@@ -120,11 +217,20 @@ export const registerUser = async (userData: CreateUserDTO): Promise<LoginRespon
                 hashedPassword,
                 userData.role,
                 initialAvatar,
-                JSON.stringify(initialDBLocation),
+                JSON.stringify(initialDBLocation), // $7 is the GeoJSON string
                 null
             ]
         );
-        const newUserEntity: UserEntity = userTableResult.rows[0];
+        const newUserEntityFromDB: any = userTableResult.rows[0];
+
+        // Manually reconstruct newUserEntity to include the parsed location as DBLocation type
+        const newUserEntity: UserEntity = {
+            ...newUserEntityFromDB, // Copy all existing fields
+            // Parse the 'location_geojson_text' back into the 'location' property as a DBLocation object
+            location: newUserEntityFromDB.location_geojson_text ?
+                JSON.parse(newUserEntityFromDB.location_geojson_text) as DBLocation :
+                null
+        };
 
         let roleSpecificEntity: SellerEntity | BuyerEntity | AdminEntity | undefined;
 
@@ -156,8 +262,8 @@ export const registerUser = async (userData: CreateUserDTO): Promise<LoginRespon
             roleSpecificEntity = sellerResult.rows[0];
 
         } else if (newUserEntity.role === UserRole.Buyer) {
-            const initialPurchaseHistory = JSON.stringify([]);
-            const initialFavoriteProducts = JSON.stringify([]);
+            const initialPurchaseHistory: string[] = [];
+            const initialFavoriteProducts: string[] = [];
 
             const buyerResult = await client.query<BuyerEntity>(
                 `INSERT INTO buyers (user_id, purchase_history, favorite_products)
@@ -182,6 +288,7 @@ export const registerUser = async (userData: CreateUserDTO): Promise<LoginRespon
             id: newUserEntity.id,
             role: newUserEntity.role,
             email: newUserEntity.email,
+            name: newUserEntity.name,
         });
 
         // 4. Map entities to the unified UserResponseDTO
@@ -202,24 +309,35 @@ export const registerUser = async (userData: CreateUserDTO): Promise<LoginRespon
         }
     }
 };
-
 export const loginUser = async (credentials: LoginRequestDTO): Promise<LoginResponseDTO> => {
     let client: PoolClient | null = null;
     try {
         client = await pool.connect();
 
         // 1. Find user by phone number
-        const userResult = await client.query<UserEntity>(
-            `SELECT * FROM users WHERE phone = $1`,
+        // Add ST_AsGeoJSON(location)::text as location_geojson_text
+        const userResult = await client.query<UserEntity & { location_geojson_text: string }>(
+            `SELECT *, ST_AsGeoJSON(location)::text AS location_geojson_text FROM users WHERE phone = $1`,
             [credentials.phone]
         );
 
-        const userEntity: UserEntity = userResult.rows[0];
+        const userEntityFromDB = userResult.rows[0];
 
-        if (!userEntity) {
+        if (!userEntityFromDB) {
             throw new Error('Invalid credentials'); // User not found
         }
 
+        // Manually reconstruct userEntity to include the parsed location as DBLocation type
+        const userEntity: UserEntity = {
+            ...userEntityFromDB, // Copy all existing fields
+            // Parse the 'location_geojson_text' back into the 'location' property as a DBLocation object
+            location: userEntityFromDB.location_geojson_text ?
+                JSON.parse(userEntityFromDB.location_geojson_text) as DBLocation :
+                null
+        };
+
+        // ... rest of the loginUser function remains the same
+        // (continue from '2. Compare passwords' using userEntity)
         // 2. Compare passwords
         const isPasswordValid = await bcrypt.compare(credentials.password, userEntity.password);
 
@@ -548,6 +666,65 @@ export const updateUserEWalletDetailsInDB = async (userId: string, updates: EWal
             await client.query('ROLLBACK');
         }
         console.error('Update user e-wallet details failed:', error);
+        throw error;
+    } finally {
+        if (client) {
+            client.release();
+        }
+    }
+};
+
+export const submitSellerVerification = async (userId: string, updates: SellerVerificationRequestDTO): Promise<UserResponseDTO> => {
+    let client: PoolClient | null = null;
+    try {
+        client = await pool.connect();
+        await client.query('BEGIN');
+
+        // Check if the user is a seller
+        const userCheckQuery = await client.query<UserEntity>('SELECT role FROM users WHERE id = $1', [userId]);
+        if (userCheckQuery.rows.length === 0 || userCheckQuery.rows[0].role !== UserRole.Seller) {
+            throw new Error('User is not a seller and cannot be verified.');
+        }
+
+        // Prepare the credentials object to be stored as JSONB
+        const credentialsJson = JSON.stringify(updates.credentials);
+
+        // Update the sellers table with the business name and verification status
+        const sellerUpdateQuery = `
+            UPDATE sellers
+            SET
+                business_name = $1,
+                credentials = $2,
+                verification_status = $3
+            WHERE user_id = $4
+            RETURNING *;
+        `;
+
+        const sellerUpdateResult = await client.query<SellerEntity>(sellerUpdateQuery, [
+            updates.businessName,
+            credentialsJson,
+            updates.verificationStatus,
+            userId
+        ]);
+
+        if (sellerUpdateResult.rows.length === 0) {
+            throw new Error('Seller profile not found or update failed.');
+        }
+
+        // Fetch the user and role-specific data for a complete DTO response
+        const userEntityResult = await client.query<UserEntity>('SELECT * FROM users WHERE id = $1', [userId]);
+        const userEntity = userEntityResult.rows[0];
+        const sellerEntity = sellerUpdateResult.rows[0];
+
+        const updatedUser = await mapUserAndRoleEntityToUserResponseDTO(userEntity, sellerEntity);
+
+        await client.query('COMMIT');
+        return updatedUser;
+    } catch (error) {
+        if (client) {
+            await client.query('ROLLBACK');
+        }
+        console.error('Submit seller verification failed:', error);
         throw error;
     } finally {
         if (client) {

@@ -7,11 +7,12 @@ import { UserRole, OrderStatus } from '../types/enums';
 export const fetchOrders = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
         // Extract query parameters for filtering
-        const { buyerId, sellerId } = req.query as GetOrdersQueryDTO;
+        const { buyer_id, seller_id, status } = req.query as GetOrdersQueryDTO;
 
         // Apply server-side filtering based on authenticated user's role
-        let actualBuyerId: string | undefined = buyerId;
-        let actualSellerId: string | undefined = sellerId;
+        let actualBuyerId: string | undefined = buyer_id;
+        let actualSellerId: string | undefined = seller_id;
+        let actualStatus: OrderStatus | undefined = status;
 
         if (req.user) {
             // A buyer can only fetch their own orders
@@ -27,32 +28,29 @@ export const fetchOrders = async (req: AuthenticatedRequest, res: Response, next
             // Admins can fetch any orders, so they can use provided buyerId/sellerId or fetch all
         }
 
-        const orders = await OrderService.fetchOrders(actualBuyerId, actualSellerId);
-        res.status(200).json({ orders }); // Wrap in 'orders' array as per BackendOrderResponse
+        // Call the service function with the filtered parameters
+        const orders = await OrderService.fetchOrders(actualBuyerId, actualSellerId, actualStatus);
+
+        res.status(200).json(orders);
     } catch (error) {
-        next(error); // Pass error to global error handler
+        next(error);
     }
 };
 
 export const placeOrder = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    console.log('Controller');
     try {
-        const buyerId = req.user?.id; // The authenticated user's ID will be the buyerId
-
+        const buyerId = req.user?.id;
         if (!buyerId) {
-            // This case should ideally be caught by `authenticateUser` middleware
-            res.status(401).json({ message: 'Authentication required to place an order.' });
+            res.status(401).json({ message: 'User not authenticated.' });
             return;
         }
 
-        const orderData: PlaceOrderRequestDTO = req.body; // The validated body from validatePlaceOrder
+        const placeOrderRequestDTO = req.body as PlaceOrderRequestDTO;
+        const newOrders = await OrderService.placeOrder(buyerId, placeOrderRequestDTO);
 
-        // Additional business logic check: ensure buyer is not placing orders for someone else
-        // (This is implicitly handled if you only extract buyerId from req.user)
-
-        const newOrders = await OrderService.placeOrder(buyerId, orderData);
-
-        if (!newOrders || newOrders.length === 0) {
-            res.status(500).json({ message: 'Failed to place order. No orders were created.' });
+        if (!newOrders) {
+            res.status(400).json({ message: 'Failed to place order. Check if all products exist and quantities are sufficient.' });
             return;
         }
 
@@ -67,8 +65,14 @@ export const updateOrderStatus = async (req: AuthenticatedRequest, res: Response
         const { orderId } = req.params;
         const { status } = req.body as UpdateOrderStatusRequestDTO;
 
+        // Get user info from the authenticated request
+        const user = req.user;
+        if (!user) {
+            res.status(401).json({ message: 'User not authenticated.' });
+            return;
+        }
 
-        if (req.user && req.user.role === UserRole.Seller) {
+        if (user.role === UserRole.Seller) {
             const allowedSellerStatuses = [
                 OrderStatus.Processing,
                 OrderStatus.Shipped,
@@ -79,15 +83,15 @@ export const updateOrderStatus = async (req: AuthenticatedRequest, res: Response
                 res.status(403).json({ message: `Sellers cannot set order status to '${status}'.` });
                 return;
             }
-        } else if (req.user && req.user.role === UserRole.Buyer) {
+        } else if (user.role === UserRole.Buyer) {
             if (status !== OrderStatus.Cancelled) {
                 res.status(403).json({ message: `Buyers cannot set order status to '${status}'.` });
                 return;
             }
         }
 
-
-        const updatedOrder = await OrderService.updateOrderStatus(orderId, status);
+        // Call the service function with all required arguments
+        const updatedOrder = await OrderService.updateOrderStatus(orderId, status, user.role, user.id);
 
         if (!updatedOrder) {
             res.status(404).json({ message: 'Order not found.' });

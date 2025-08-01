@@ -10,9 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/node-cron": "^3.0.11",
     "axios": "^1.10.0",
     "bcryptjs": "^3.0.2",
     "cheerio": "^1.1.0",
+    "cloudinary": "^2.7.0",
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",
     "dotenv": "^17.0.1",
@@ -20,14 +22,15 @@
     "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
-    "multer": "^2.0.1",
-    "node-cron": "^4.2.0",
+    "multer": "^2.0.2",
+    "node-cron": "^4.2.1",
     "pdf-parse": "^1.1.1",
     "pg": "^8.16.3",
     "socket.io": "^4.8.1",
     "tesseract.js": "^6.0.1",
     "twilio": "^5.7.3",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "wellknown": "^0.5.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^3.0.0",
@@ -41,6 +44,7 @@
     "@types/pdf-parse": "^1.1.5",
     "@types/pg": "^8.15.4",
     "@types/socket.io": "^3.0.2",
+    "@types/wellknown": "^0.5.8",
     "@typescript-eslint/eslint-plugin": "^8.35.1",
     "@typescript-eslint/parser": "^8.35.1",
     "eslint": "^9.30.1",

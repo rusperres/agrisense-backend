@@ -1,0 +1,311 @@
+=== RAW LLM TABLE OUTPUT (SUB-CHUNK 8) ===
+Input Type: unstructured
+Potential Records (from LLM): 25
+Inserted Records (after validation): 25
+
+crop_name|category|specification|price|unit
+Imported Tiger Chillies|FRUITS||423.60|P/unit
+Calamansi|FRUITS||96.62|P/unit
+Banana (Lakatan)|FRUITS|8-10 pcs/kg|100.27|P/kg
+Banana (Latundan)|FRUITS|10-12 pcs/kg|74.44|P/kg
+Banana (Saba)|FRUITS||52.34|P/unit
+Papaya Solo|FRUITS|Ripe, 2-3 pcs/kg|70.90|P/kg
+Mango (Carabao)|FRUITS|Ripe, 3-4 pcs/kg|164.40|P/kg
+Avocado|FRUITS||156.42|P/unit
+Melon|FRUITS||105.00|P/unit
+Pomelo|FRUITS||170.41|P/unit
+Watermelon|FRUITS||73.47|P/unit
+Sugar Refined|OTHER BASIC COMMODITIES||83.21|P/kg
+Sugar Washed|OTHER BASIC COMMODITIES||76.77|P/kg
+Sugar Brown|OTHER BASIC COMMODITIES||74.66|P/kg
+Salt (Rock)|OTHER BASIC COMMODITIES|per kg|20.68|P/kg
+Salt (Iodized)|OTHER BASIC COMMODITIES|per kg|42.90|P/kg
+Cooking Oil (Palm)|OTHER BASIC COMMODITIES|350 ml/bottle|36.19|P/bottle
+Cooking Oil (Palm)|OTHER BASIC COMMODITIES|1 Liter/bottle|93.48|P/bottle
+Cooking Oil (Coconut)|OTHER BASIC COMMODITIES|350 ml/bottle|55.55|P/bottle
+Cooking Oil (Coconut)|OTHER BASIC COMMODITIES|1 Liter/bottle|165.81|P/bottle
+Cooking Oil (Minola)|OTHER BASIC COMMODITIES|500 ml/bottle|n/a|P/bottle
+Cooking Oil (Minola)|OTHER BASIC COMMODITIES|1,000 ml/bottle|n/a|P/bottle
+Cooking Oil (Spring)|OTHER BASIC COMMODITIES|500 ml/bottle|n/a|P/bottle
+Cooking Oil (Spring)|OTHER BASIC COMMODITIES|1,000 ml/bottle|n/a|P/bottle
+Cooking Oil (Palm Olein)|OTHER BASIC COMMODITIES|1,000 ml/bottle|145.00|P/bottle
+
+
+=== VALIDATED AND PREPARED RECORDS FOR INSERTION (FROM THIS SUB-CHUNK) ===
+[
+  {
+    "crop_name": "Imported Tiger Chillies",
+    "category": "FRUITS",
+    "region": "NCR",
+    "price": 423.6,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Calamansi",
+    "category": "FRUITS",
+    "region": "NCR",
+    "price": 96.62,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Banana (Lakatan)",
+    "category": "FRUITS",
+    "region": "NCR",
+    "price": 100.27,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "8-10 pcs/kg"
+  },
+  {
+    "crop_name": "Banana (Latundan)",
+    "category": "FRUITS",
+    "region": "NCR",
+    "price": 74.44,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "10-12 pcs/kg"
+  },
+  {
+    "crop_name": "Banana (Saba)",
+    "category": "FRUITS",
+    "region": "NCR",
+    "price": 52.34,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Papaya Solo",
+    "category": "FRUITS",
+    "region": "NCR",
+    "price": 70.9,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Ripe, 2-3 pcs/kg"
+  },
+  {
+    "crop_name": "Mango (Carabao)",
+    "category": "FRUITS",
+    "region": "NCR",
+    "price": 164.4,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "Ripe, 3-4 pcs/kg"
+  },
+  {
+    "crop_name": "Avocado",
+    "category": "FRUITS",
+    "region": "NCR",
+    "price": 156.42,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Melon",
+    "category": "FRUITS",
+    "region": "NCR",
+    "price": 105,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Pomelo",
+    "category": "FRUITS",
+    "region": "NCR",
+    "price": 170.41,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Watermelon",
+    "category": "FRUITS",
+    "region": "NCR",
+    "price": 73.47,
+    "unit": "P/unit",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Sugar Refined",
+    "category": "OTHER BASIC COMMODITIES",
+    "region": "NCR",
+    "price": 83.21,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Sugar Washed",
+    "category": "OTHER BASIC COMMODITIES",
+    "region": "NCR",
+    "price": 76.77,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Sugar Brown",
+    "category": "OTHER BASIC COMMODITIES",
+    "region": "NCR",
+    "price": 74.66,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": ""
+  },
+  {
+    "crop_name": "Salt (Rock)",
+    "category": "OTHER BASIC COMMODITIES",
+    "region": "NCR",
+    "price": 20.68,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "per kg"
+  },
+  {
+    "crop_name": "Salt (Iodized)",
+    "category": "OTHER BASIC COMMODITIES",
+    "region": "NCR",
+    "price": 42.9,
+    "unit": "P/kg",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "per kg"
+  },
+  {
+    "crop_name": "Cooking Oil (Palm)",
+    "category": "OTHER BASIC COMMODITIES",
+    "region": "NCR",
+    "price": 36.19,
+    "unit": "P/bottle",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "350 ml/bottle"
+  },
+  {
+    "crop_name": "Cooking Oil (Palm)",
+    "category": "OTHER BASIC COMMODITIES",
+    "region": "NCR",
+    "price": 93.48,
+    "unit": "P/bottle",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "1 Liter/bottle"
+  },
+  {
+    "crop_name": "Cooking Oil (Coconut)",
+    "category": "OTHER BASIC COMMODITIES",
+    "region": "NCR",
+    "price": 55.55,
+    "unit": "P/bottle",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "350 ml/bottle"
+  },
+  {
+    "crop_name": "Cooking Oil (Coconut)",
+    "category": "OTHER BASIC COMMODITIES",
+    "region": "NCR",
+    "price": 165.81,
+    "unit": "P/bottle",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "1 Liter/bottle"
+  },
+  {
+    "crop_name": "Cooking Oil (Minola)",
+    "category": "OTHER BASIC COMMODITIES",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/bottle",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "500 ml/bottle"
+  },
+  {
+    "crop_name": "Cooking Oil (Minola)",
+    "category": "OTHER BASIC COMMODITIES",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/bottle",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "1,000 ml/bottle"
+  },
+  {
+    "crop_name": "Cooking Oil (Spring)",
+    "category": "OTHER BASIC COMMODITIES",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/bottle",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "500 ml/bottle"
+  },
+  {
+    "crop_name": "Cooking Oil (Spring)",
+    "category": "OTHER BASIC COMMODITIES",
+    "region": "NCR",
+    "price": null,
+    "unit": "P/bottle",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "1,000 ml/bottle"
+  },
+  {
+    "crop_name": "Cooking Oil (Palm Olein)",
+    "category": "OTHER BASIC COMMODITIES",
+    "region": "NCR",
+    "price": 145,
+    "unit": "P/bottle",
+    "trend": "N/A",
+    "source": "DA",
+    "date": "2025-07-31",
+    "specification": "1,000 ml/bottle"
+  }
+]

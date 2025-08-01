@@ -132,15 +132,39 @@ export const validateUpdateEWalletDetails: RequestHandler[] = [
     }) as RequestHandler
 ];
 
+export const validateSellerVerification: RequestHandler[] = [
+    body('businessName').notEmpty().withMessage('Business name is required.')
+        .isString().trim().withMessage('Business name must be a string.'),
+    body('credentials.documents').isArray({ min: 1 }).withMessage('At least one document URL is required.'),
+    body('credentials.documents.*').isURL().withMessage('Document URLs must be valid URLs.'),
+    body('verificationStatus').isIn(Object.values(VerificationStatus)).withMessage('Invalid verification status.'),
+    ((req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        next();
+    }) as RequestHandler
+];
+
 export const validateCreateProduct: RequestHandler[] = [
     body('name').notEmpty().withMessage('Product name is required'),
-    body('category').notEmpty().withMessage('Category is required'),
-    body('price').isFloat({ min: 0 }).withMessage('Price must be a positive number'),
-    body('unit').notEmpty().withMessage('Unit is required'),
-    body('stock').isInt({ min: 0 }).withMessage('Stock must be a non-negative integer'),
     body('variety').optional().isString().withMessage('Variety must be a string or null'),
+    body('quantity').isInt({ min: 0 }).withMessage('Stock must be a non-negative integer'),
+    body('unit').notEmpty().withMessage('Unit is required'),
+    body('price').isFloat({ min: 0 }).withMessage('Price must be a positive number'),
     body('description').optional().isString().withMessage('Description must be a string or null'),
-    // Images: can be null or an array of strings (URLs)
+    body('harvest_date').optional().isString().withMessage('Harvest date must be a string (ISO 8601 format) or null')
+        .custom((value: string | null) => {
+            if (value === null) return true;
+            // Basic ISO 8601 check, a more robust check might involve parsing Date
+            return /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z)?$/.test(value);
+        }).withMessage('Harvest date must be a valid ISO 8601 string or null'),
+    body('location').optional().isObject().withMessage('Location must be an object or null'),
+    body('location.lat').optional().isFloat({ min: -90, max: 90 }).withMessage('Latitude must be between -90 and 90'),
+    body('location.lng').optional().isFloat({ min: -180, max: 180 }).withMessage('Longitude must be between -180 and 180'),
+    body('location.address').optional().isString().withMessage('Address must be a string or null'),
+    body('category').notEmpty().withMessage('Category is required'),
     body('images').optional().isArray().withMessage('Images must be an array of strings or null')
         .custom((value: string[] | null) => {
             if (value === null) return true;
@@ -149,23 +173,8 @@ export const validateCreateProduct: RequestHandler[] = [
             }
             return false;
         }).withMessage('Each image URL must be a non-empty string'),
-    // harvest_date: should be an ISO string or null
-    body('harvest_date').optional().isString().withMessage('Harvest date must be a string (ISO 8601 format) or null')
-        .custom((value: string | null) => {
-            if (value === null) return true;
-            // Basic ISO 8601 check, a more robust check might involve parsing Date
-            return /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z)?$/.test(value);
-        }).withMessage('Harvest date must be a valid ISO 8601 string or null'),
     body('condition').optional().isIn(Object.values(ProductCondition)).withMessage(`Condition must be one of: ${Object.values(ProductCondition).join(', ')}`),
     body('is_active').isBoolean().withMessage('is_active must be a boolean'),
-    // Location validation: Can be null, or if present, lat, lng, and address
-    body('location').optional().isObject().withMessage('Location must be an object or null'),
-    body('location.lat').optional().isFloat({ min: -90, max: 90 }).withMessage('Latitude must be between -90 and 90'),
-    body('location.lng').optional().isFloat({ min: -180, max: 180 }).withMessage('Longitude must be between -180 and 180'),
-    body('location.address').optional().isString().withMessage('Address must be a string or null'),
-    // seller_id is NOT validated here; it comes from req.user!.id in controller
-
-    // Middleware to check for validation errors
     ((req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -178,12 +187,21 @@ export const validateCreateProduct: RequestHandler[] = [
 export const validateUpdateProduct: RequestHandler[] = [
     // All fields are optional for an update
     body('name').optional().isString().withMessage('Product name must be a string'),
-    body('category').optional().isString().withMessage('Category must be a string'),
-    body('price').optional().isFloat({ min: 0 }).withMessage('Price must be a positive number'),
-    body('unit').optional().isString().withMessage('Unit must be a string'),
-    body('stock').optional().isInt({ min: 0 }).withMessage('Stock must be a non-negative integer'),
     body('variety').optional().isString().withMessage('Variety must be a string or null'),
+    body('quantity').optional().isInt({ min: 0 }).withMessage('Quantity must be a non-negative integer'),
+    body('unit').optional().isString().withMessage('Unit must be a string'),
+    body('price').optional().isFloat({ min: 0 }).withMessage('Price must be a positive number'),
     body('description').optional().isString().withMessage('Description must be a string or null'),
+    body('harvest_date').optional().isString().withMessage('Harvest date must be a string (ISO 8601 format) or null')
+        .custom((value: string | null) => {
+            if (value === null) return true;
+            return /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z)?$/.test(value);
+        }).withMessage('Harvest date must be a valid ISO 8601 string or null'),
+    body('location').optional().isObject().withMessage('Location must be an object or null'),
+    body('location.lat').optional().isFloat({ min: -90, max: 90 }).withMessage('Latitude must be between -90 and 90'),
+    body('location.lng').optional().isFloat({ min: -180, max: 180 }).withMessage('Longitude must be between -180 and 180'),
+    body('location.address').optional().isString().withMessage('Address must be a string or null'),
+    body('category').optional().isString().withMessage('Category must be a string'),
     body('images').optional().isArray().withMessage('Images must be an array of strings or null')
         .custom((value: string[] | null) => {
             if (value === null) return true;
@@ -192,19 +210,19 @@ export const validateUpdateProduct: RequestHandler[] = [
             }
             return false;
         }).withMessage('Each image URL must be a non-empty string'),
-    body('harvest_date').optional().isString().withMessage('Harvest date must be a string (ISO 8601 format) or null')
-        .custom((value: string | null) => {
-            if (value === null) return true;
-            return /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z)?$/.test(value);
-        }).withMessage('Harvest date must be a valid ISO 8601 string or null'),
     body('condition').optional().isIn(Object.values(ProductCondition)).withMessage(`Condition must be one of: ${Object.values(ProductCondition).join(', ')}`),
     body('is_active').optional().isBoolean().withMessage('is_active must be a boolean'),
-    body('location').optional().isObject().withMessage('Location must be an object or null'),
-    body('location.lat').optional().isFloat({ min: -90, max: 90 }).withMessage('Latitude must be between -90 and 90'),
-    body('location.lng').optional().isFloat({ min: -180, max: 180 }).withMessage('Longitude must be between -180 and 180'),
-    body('location.address').optional().isString().withMessage('Address must be a string or null'),
+    ((req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        next();
+    }) as RequestHandler
+];
 
-    // Middleware to check for validation errors
+export const validateProductId: RequestHandler[] = [
+    param('id').isUUID().withMessage('Invalid product ID format.'),
     ((req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -265,32 +283,33 @@ export const validateUpdateCartItemQuantity: RequestHandler[] = [
 
 
 export const validatePlaceOrder: RequestHandler[] = [
+    // Validate the 'items' array
     body('items')
         .isArray({ min: 1 }).withMessage('At least one item is required to place an order'),
-    body('items.*.productId') // Wildcard to validate each item in the array
+
+    // Validate each item in the 'items' array.
+    body('items.*.product_id')
         .notEmpty().withMessage('Product ID is required for each item')
         .isUUID().withMessage('Product ID must be a valid UUID'),
     body('items.*.quantity')
         .isInt({ min: 1 }).withMessage('Quantity must be a positive integer for each item'),
-    body('items.*.pricePerUnit')
-        .isFloat({ min: 0 }).withMessage('Price per unit must be a non-negative number for each item'),
-    body('items.*.subtotal')
-        .isFloat({ min: 0 }).withMessage('Subtotal must be a non-negative number for each item'),
 
-    body('paymentMethod')
+    // The frontend payload uses 'payment_method', so the middleware should check for that.
+    body('payment_method')
         .isIn(Object.values(PaymentMethod)).withMessage(`Payment method must be one of: ${Object.values(PaymentMethod).join(', ')}`),
 
-    body('deliveryLocation')
-        .exists().withMessage('Delivery location is required')
-        .notEmpty().withMessage('Delivery location cannot be empty'), // Checks for null/undefined/empty string/empty object
-    body('deliveryLocation.lat')
+    body('delivery_location')
+        .exists().withMessage('Delivery location is required'), // Ensures the object itself is present
+    body('delivery_location.lat')
         .isFloat({ min: -90, max: 90 }).withMessage('Latitude must be a valid number between -90 and 90'),
-    body('deliveryLocation.lng')
+    body('delivery_location.lng')
         .isFloat({ min: -180, max: 180 }).withMessage('Longitude must be a valid number between -180 and 180'),
-    body('deliveryLocation.address')
-        .optional({ nullable: true }).isString().withMessage('Address must be a string or null'), // Allows null address
+    body('delivery_location.address')
+        .optional({ nullable: true }).isString().withMessage('Address must be a string or null'),
 
+    // Custom middleware to handle validation results
     ((req, res, next) => {
+
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });

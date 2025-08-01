@@ -16,17 +16,17 @@ export interface OrderEntity {
     id: string;
     buyerId: string;
     sellerId: string;
-    sellerName: string;
+    seller_name: string;
     orderItems: OrderItemEntity[];
     totalPrice: number;
     status: OrderStatus;
     paymentMethod: PaymentMethod;
     deliveryLocation: DBLocation | null;
     trackingNumber: string | null;
-    orderDate: Date;
-    estimatedDeliveryDate: Date | null;
+    orderDate: string;
+    estimatedDeliveryDate: string | null;
     canReorder: boolean;
     canReview: boolean;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
 }

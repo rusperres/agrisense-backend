@@ -1,7 +1,5 @@
-// src/jobs/scheduler.ts
-
 import cron from 'node-cron';
-import { runPriceScraperJob } from './priceScraper.job'; // Import the price scraper job
+import { runPriceScraperJob } from './priceScraper.job';
 
 /**
  * Configures and starts all scheduled jobs for the application.
@@ -23,8 +21,7 @@ export const startJobScheduler = () => {
       console.error('[JOB SCHEDULER] Error during daily price scraping job:', error);
     }
   }, {
-    scheduled: true,
-    timezone: "Asia/Manila" // Set to your application's target timezone (e.g., for Cebu City)
+    timezone: "Asia/Manila"
   });
 
   // --- Add other jobs here as needed in the future ---

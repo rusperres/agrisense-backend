@@ -1,13 +1,15 @@
 import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { AuthenticatedRequest } from '../types/express';
 import { UserRole } from '../types/enums';
+import { AuthenticatedRequest } from '../types/express'; // This is crucial
 
 interface JwtPayload {
     id: string;
     role: UserRole;
     phone: string;
     email: string | null;
+    name: string;
+
 }
 
 
@@ -28,7 +30,8 @@ export const authenticateUser = (req: AuthenticatedRequest, res: Response, next:
             id: payload.id,
             role: payload.role,
             phone: payload.phone,
-            email: payload.email
+            email: payload.email,
+            name: payload.name
         };
 
         next();
@@ -58,3 +61,8 @@ export const authorizeRoles = (allowedRoles: UserRole[]) => {
         next(); // User has the required role, proceed
     };
 };
+
+export const protect = (allowedRoles: UserRole[]) => [
+    authenticateUser,
+    authorizeRoles(allowedRoles)
+];

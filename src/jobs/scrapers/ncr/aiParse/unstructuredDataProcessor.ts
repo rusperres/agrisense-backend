@@ -9,11 +9,10 @@
  * parsing the LLM's table-formatted response.
  */
 
-import * as path from 'node:path';
-import * as fs from 'node:fs/promises';
 import { NewMarketPrice } from '../../../../types/entities/marketPrice.entity';
 import { MarketTrend } from '../../../../types/enums';
 import { cleanText, parsePrice, extractUnit } from '../utils/commonParsers'; // Import from common utils
+import { saveScraperLog } from '../../scraperLog.service'; // NEW: Import the new log service
 
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
@@ -46,10 +45,7 @@ const parseLLMTableString = (tableString: string): LLMMarketPriceItem[] => {
   }
 
   // Assuming the first line is the header and we'll ignore it for direct parsing
-  // If the LLM is instructed to *not* include a header, this line needs adjustment.
-  // For robustness, we can try to infer columns or just rely on position.
-  // For now, let's assume the LLM will provide data in the expected order.
-  const dataLines = lines.slice(1); // Skip header line if present, or adjust if no header is expected
+  const dataLines = lines.slice(1);
 
   const extractedItems: LLMMarketPriceItem[] = [];
   for (const line of dataLines) {
@@ -82,18 +78,14 @@ const parseLLMTableString = (tableString: string): LLMMarketPriceItem[] => {
 export const processUnstructuredData = async (rawText: string, date: string): Promise<NewMarketPrice[]> => {
   console.log(`[UNSTRUCTURED DATA PROCESSOR] Starting for date: ${date}`);
   const allExtractedItems: NewMarketPrice[] = [];
-  const debugLogDir = path.join(__dirname, 'ai_parser_debug_logs'); // Keep logs separate
-  await fs.mkdir(debugLogDir, { recursive: true });
-  console.log(`[UNSTRUCTURED DATA PROCESSOR] Debug logs will be saved to: ${debugLogDir}`);
+  // Removed file system logic for creating debug log directory
 
   if (!rawText.trim()) {
     console.error("[UNSTRUCTURED DATA PROCESSOR] No usable raw text provided. Cannot proceed with LLM.");
     return [];
   }
 
-  // Increased MAX_ITEMS_PER_SUBCHUNK to reduce the number of API calls
-  // and mitigate quota limits. The LLM can handle more items per request.
-  const MAX_ITEMS_PER_SUBCHUNK = 50; // Changed from 10 to 50
+  const MAX_ITEMS_PER_SUBCHUNK = 50;
   let currentSubChunkItems: string[] = [];
   let subChunkIndex = 0;
 
@@ -107,33 +99,31 @@ export const processUnstructuredData = async (rawText: string, date: string): Pr
       subChunkIndex++;
       console.log(`[UNSTRUCTURED DATA PROCESSOR]   Processing sub-chunk ${subChunkIndex} (${currentSubChunkItems.length} items).`);
 
-      // Updated prompt to request a pipe-separated table format
       const prompt = `
-            You are an expert data extractor. Your task is to extract market price data for items from the following text.
-            The text contains a list of agricultural and fishery commodities with their specifications and prevailing retail prices.
-            Each item has a a commodity name, a specification, and a price. Prices can be "n/a" for not available.
-            Infer the 'unit' (e.g., 'P/kg', 'P/pc', 'P/bottle', 'P/unit') from the specification or commodity description.
-            If a unit is not clearly inferable, default to 'P/unit'.
+          You are an expert data extractor. Your task is to extract market price data for items from the following text.
+          The text contains a list of agricultural and fishery commodities with their specifications and prevailing retail prices.
+          Each item has a a commodity name, a specification, and a price. Prices can be "n/a" for not available.
+          Infer the 'unit' (e.g., 'P/kg', 'P/pc', 'P/bottle', 'P/unit') from the specification or commodity description.
+          If a unit is not clearly inferable, default to 'P/unit'.
 
-            Extract the data into a pipe-separated table format. Each row should represent one item.
-            The columns should be: crop_name|category|specification|price|unit
-            Provide a header row. Ensure all fields are present for each item.
-            If a specification is not available, use an empty string "".
-            If a crop name cannot be identified, return "UNKNOWN CROP".
+          Extract the data into a pipe-separated table format. Each row should represent one item.
+          The columns should be: crop_name|category|specification|price|unit
+          Provide a header row. Ensure all fields are present for each item.
+          If a specification is not available, use an empty string "".
+          If a crop name cannot be identified, return "UNKNOWN CROP".
 
-            Here is the text segment to parse:
-            ---
-            ${subChunkText}
-            ---
-            Provide the COMPLETE table for this segment. Do not omit any items or truncate the table.
-            Ensure the table is perfectly well-formed and complete.
-          `;
+          Here is the text segment to parse:
+          ---
+          ${subChunkText}
+          ---
+          Provide the COMPLETE table for this segment. Do not omit any items or truncate the table.
+          Ensure the table is perfectly well-formed and complete.
+        `;
 
       const payload = {
         contents: [{ role: "user", parts: [{ text: prompt }] }],
         generationConfig: {
-          // Removed responseMimeType and responseSchema to get plain text output
-          maxOutputTokens: 4096, // Keep maxOutputTokens
+          maxOutputTokens: 4096,
         }
       };
 
@@ -165,7 +155,6 @@ export const processUnstructuredData = async (rawText: string, date: string): Pr
 
       let extractedSubChunkData: LLMMarketPriceItem[] = [];
       try {
-        // Call the new parsing function
         extractedSubChunkData = parseLLMTableString(llmExtractedTableString);
         console.log(`[UNSTRUCTURED DATA PROCESSOR]   LLM extracted ${extractedSubChunkData.length} records for sub-chunk ${subChunkIndex}.`);
       } catch (parseErr) {
@@ -194,8 +183,7 @@ export const processUnstructuredData = async (rawText: string, date: string): Pr
         }
       }
 
-      const subChunkFileName = `${date}_ai_subchunk_${subChunkIndex}_debug.txt`;
-      const subChunkFilePath = path.join(debugLogDir, subChunkFileName);
+      // Prepare the log content to be saved to the database
       const subChunkLogContent = `
 === RAW LLM TABLE OUTPUT (SUB-CHUNK ${subChunkIndex}) ===
 Input Type: unstructured
@@ -208,10 +196,13 @@ ${llmExtractedTableString}
 ${JSON.stringify(validRecordsForThisSubChunk, null, 2)}
 `;
       try {
-        await fs.writeFile(subChunkFilePath, subChunkLogContent.trim());
-        console.log(`[UNSTRUCTURED DATA PROCESSOR]   Debug log saved for sub-chunk ${subChunkIndex} to ${subChunkFilePath}`);
-      } catch (fileWriteError) {
-        console.error(`[UNSTRUCTURED DATA PROCESSOR]   Failed to write debug log for sub-chunk ${subChunkIndex}:`, fileWriteError);
+        await saveScraperLog({
+          text: subChunkLogContent.trim(),
+          parserUsed: 'AI Unstructured',
+          date: date,
+        });
+      } catch (dbError) {
+        console.error(`[UNSTRUCTURED DATA PROCESSOR]   Failed to save debug log to database for sub-chunk ${subChunkIndex}:`, dbError);
       }
 
       allExtractedItems.push(...validRecordsForThisSubChunk);
@@ -232,6 +223,5 @@ ${JSON.stringify(validRecordsForThisSubChunk, null, 2)}
 
   console.log(`[UNSTRUCTURED DATA PROCESSOR] Total unique records: ${uniqueMarketPrices.length}`);
 
-  // Database insertion is now handled by the orchestrator after all processing
   return uniqueMarketPrices;
 };
