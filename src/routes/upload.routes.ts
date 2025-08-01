@@ -1,18 +1,14 @@
-// backend/src/routes/upload.routes.ts
-import express, { Request, Response, NextFunction } from 'express'; // Import Request, Response, NextFunction
+import express, { Request, Response, NextFunction } from 'express';
 import multer from 'multer';
 import cloudinary from '../config/cloudinary';
 import { protect } from '../middlewares/auth.middleware';
 import { UserRole } from '../types/enums';
-import { AuthenticatedRequest } from '../types/express'; // <-- Import AuthenticatedRequest
 
 const router = express.Router();
 
-// Configure Multer for in-memory storage. Files will be buffered and then sent to Cloudinary.
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// Define allowed MIME types for both product images and verification documents
 const allowedMimeTypes = [
     'image/jpeg',
     'image/jpg',
@@ -22,23 +18,17 @@ const allowedMimeTypes = [
     'application/pdf'
 ];
 
-// Roles allowed to upload files
-// Assuming FARMERs upload product images/verification docs, and ADMINs can too.
-const UPLOAD_ALLOWED_ROLES = [UserRole.Seller, UserRole.Admin]; // Adjust roles as per your application logic
+const UPLOAD_ALLOWED_ROLES = [UserRole.Seller, UserRole.Admin];
 
-// POST /api/upload/single
-// Apply the 'protect' middleware with allowed roles
-router.post('/single', protect(UPLOAD_ALLOWED_ROLES), upload.single('file'), async (req: AuthenticatedRequest, res: Response) => { // <-- Explicitly type req
+router.post('/single', protect(UPLOAD_ALLOWED_ROLES), upload.single('file'), async (req: Request, res: Response) => {
     try {
         if (!req.file) {
             res.status(400).json({ message: 'No file uploaded.' });
             return;
         }
 
-        // Access the userId from req.user (set by authenticateUser middleware)
         const userId = req.user?.id;
         if (!userId) {
-            // This case should ideally be caught by authenticateUser, but as a safeguard
             res.status(401).json({ message: 'User not authenticated or userId not found.' });
             return;
         }
@@ -48,7 +38,7 @@ router.post('/single', protect(UPLOAD_ALLOWED_ROLES), upload.single('file'), asy
             return;
         }
 
-        const maxSize = 10 * 1024 * 1024; // 10 MB
+        const maxSize = 10 * 1024 * 1024;
         if (req.file.size > maxSize) {
             res.status(400).json({ message: `File size exceeds the limit of ${maxSize / (1024 * 1024)}MB.` });
             return;
@@ -57,7 +47,6 @@ router.post('/single', protect(UPLOAD_ALLOWED_ROLES), upload.single('file'), asy
         const b64 = Buffer.from(req.file.buffer).toString('base64');
         let dataURI = 'data:' + req.file.mimetype + ';base64,' + b64;
 
-        // Construct dynamic folder path: agrikart/user_id/
         const folderPath = `agrikart/${userId}`;
 
         const result = await cloudinary.uploader.upload(dataURI, {
@@ -78,16 +67,13 @@ router.post('/single', protect(UPLOAD_ALLOWED_ROLES), upload.single('file'), asy
     }
 });
 
-// POST /api/upload/multiple
-// Apply the 'protect' middleware with allowed roles
-router.post('/multiple', protect(UPLOAD_ALLOWED_ROLES), upload.array('files', 10), async (req: AuthenticatedRequest, res: Response) => { // <-- Explicitly type req
+router.post('/multiple', protect(UPLOAD_ALLOWED_ROLES), upload.array('files', 10), async (req: Request, res: Response) => {
     try {
         if (!req.files || req.files.length === 0) {
             res.status(400).json({ message: 'No files uploaded.' });
             return;
         }
 
-        // Access the userId from req.user
         const userId = req.user?.id;
         if (!userId) {
             res.status(401).json({ message: 'User not authenticated or userId not found.' });
