@@ -1,12 +1,20 @@
 import { Request as ExpressRequest } from 'express';
-import { UserRole } from "./enums";
+import { File } from 'multer';
 
-export interface AuthenticatedRequest extends ExpressRequest {
-    user?: {
-        id: string;
-        role: UserRole;
-        phone: string;
-        email: string | null;
-        name: string;
-    };
+// This is how you augment the Express module
+declare global {
+    namespace Express {
+        interface Request {
+            user?: {
+                id: string;
+                role: UserRole; // Make sure to import UserRole from your enums file
+                phone: string;
+                email: string | null;
+                name: string;
+            };
+            // Add other properties that Multer adds to the request
+            file?: File;
+            files?: File[];
+        }
+    }
 }
