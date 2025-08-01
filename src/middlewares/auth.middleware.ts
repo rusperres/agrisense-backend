@@ -1,7 +1,6 @@
-import { Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { UserRole } from '../types/enums';
-import { AuthenticatedRequest } from '../types/express'; // This is crucial
 
 interface JwtPayload {
     id: string;
@@ -13,7 +12,7 @@ interface JwtPayload {
 }
 
 
-export const authenticateUser = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const authenticateUser = (req: Request, res: Response, next: NextFunction) => {
     try {
         const authHeader = req.get('Authorization');
 
@@ -46,9 +45,8 @@ export const authenticateUser = (req: AuthenticatedRequest, res: Response, next:
 };
 
 export const authorizeRoles = (allowedRoles: UserRole[]) => {
-    return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    return (req: Request, res: Response, next: NextFunction) => {
         if (!req.user) {
-            // This should ideally be caught by authenticateUser first, but as a safeguard
             res.status(401).json({ message: 'Authentication required for this action.' });
             return;
         }
@@ -58,7 +56,7 @@ export const authorizeRoles = (allowedRoles: UserRole[]) => {
             return;
         }
 
-        next(); // User has the required role, proceed
+        next();
     };
 };
 
