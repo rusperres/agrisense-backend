@@ -28,7 +28,7 @@ Java JDK: A dependency for the tabula-py library, which is used for parsing PDF 
 ## Installation
 Clone the repository: `git clone https://github.com/rusperres/agrisense-backend.git`
 
-Install dependencies: `npm i`
+Install dependencies: `npm install`
 
 Environment Variables:
 The project requires specific environment variables to run.
@@ -44,6 +44,3 @@ Database Setup:
 Create a PostgreSQL database with the name you specified in your .env file.
 
 
-To build and run the server for production, use:
-
-The API will be available at http://localhost:5000 (or the port you configured).
