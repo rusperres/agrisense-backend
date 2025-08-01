@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import * as ReviewService from '../services/review.service'; // We'll create this next
-import { AuthenticatedRequest } from '../types/express';
+import * as ReviewService from '../services/review.service';
 import { CreateReviewRequestDTO, GetReviewsQueryDTO } from '../types/dtos/review.dto';
 
 /**
@@ -8,9 +7,9 @@ import { CreateReviewRequestDTO, GetReviewsQueryDTO } from '../types/dtos/review
  * @description Handles the submission of a new review.
  * Ensures the authenticated user is the buyer ID provided in the review data.
  */
-export const createReview = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const createReview = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const buyerId = req.user?.id; // Authenticated user's ID
+        const buyerId = req.user?.id;
         if (!buyerId) {
             res.status(401).json({ message: 'Authentication required to submit a review.' });
             return;
@@ -18,8 +17,6 @@ export const createReview = async (req: AuthenticatedRequest, res: Response, nex
 
         const reviewData: CreateReviewRequestDTO = req.body;
 
-        // IMPORTANT: Ensure the buyerId from the token matches the buyerId in the request body
-        // This prevents a user from submitting a review on behalf of another user.
         if (reviewData.buyerId !== buyerId) {
             res.status(403).json({ message: 'Unauthorized: You can only submit reviews for yourself.' });
             return;
@@ -32,9 +29,9 @@ export const createReview = async (req: AuthenticatedRequest, res: Response, nex
             return;
         }
 
-        res.status(201).json(newReview); // Return 201 Created and the new review
+        res.status(201).json(newReview);
     } catch (error) {
-        next(error); // Pass to global error handler
+        next(error);
     }
 };
 
@@ -42,11 +39,11 @@ export const createReview = async (req: AuthenticatedRequest, res: Response, nex
  * @function getReviews
  * @description Handles fetching reviews based on query parameters (productId, sellerId, orderId).
  */
-export const getReviews = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const getReviews = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const queryParams: GetReviewsQueryDTO = req.query; // Query parameters are directly mapped
+        const queryParams: GetReviewsQueryDTO = req.query;
         const reviews = await ReviewService.getReviews(queryParams);
-        res.status(200).json({ reviews }); // Return reviews in the expected BackendReviewsResponse format
+        res.status(200).json({ reviews });
     } catch (error) {
         next(error);
     }

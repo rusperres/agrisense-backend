@@ -1,14 +1,11 @@
-import { Response, NextFunction } from 'express';
-import { AuthenticatedRequest } from '../types/express'; // Your custom authenticated request type
+import { Request, Response, NextFunction } from 'express';
 
-// Import DTOs for request bodies
 import {
     SendMessageRequestDTO,
     CreateConversationRequestDTO,
-    MarkMessagesReadRequestDTO // Although validation is on param, it's good to keep track
+    MarkMessagesReadRequestDTO
 } from '../types/dtos/message.dto';
 
-// Import the MessageService (we'll implement this next)
 import * as MessageService from '../services/message.service';
 
 /**
@@ -16,13 +13,13 @@ import * as MessageService from '../services/message.service';
  * @route GET /api/conversations
  * @access Private
  */
-export const fetchConversations = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const fetchConversations = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userId = req.user!.id; // Authenticated user ID from middleware
+        const userId = req.user!.id;
         const conversations = await MessageService.fetchConversations(userId);
         res.status(200).json(conversations);
     } catch (error) {
-        next(error); // Pass error to global error handler
+        next(error);
     }
 };
 
@@ -31,10 +28,10 @@ export const fetchConversations = async (req: AuthenticatedRequest, res: Respons
  * @route GET /api/conversations/:conversationId/messages
  * @access Private
  */
-export const fetchMessages = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const fetchMessages = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userId = req.user!.id; // Authenticated user ID
-        const { conversationId } = req.params; // Get conversationId from URL parameters
+        const userId = req.user!.id;
+        const { conversationId } = req.params;
 
         const messages = await MessageService.fetchMessages(userId, conversationId);
         res.status(200).json(messages);
@@ -48,14 +45,13 @@ export const fetchMessages = async (req: AuthenticatedRequest, res: Response, ne
  * @route POST /api/messages
  * @access Private
  */
-export const sendMessage = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const sendMessage = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const senderId = req.user!.id; // Authenticated user ID (the sender)
-        // The request body contains conversationId, receiverId, content, type
+        const senderId = req.user!.id;
         const messageData: SendMessageRequestDTO = req.body;
 
         const newMessage = await MessageService.sendMessage(senderId, messageData);
-        res.status(201).json(newMessage); // 201 Created for a new resource
+        res.status(201).json(newMessage);
     } catch (error) {
         next(error);
     }
@@ -66,14 +62,13 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response, next
  * @route POST /api/conversations
  * @access Private
  */
-export const createConversation = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const createConversation = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const currentUserId = req.user!.id; // Authenticated user ID (one of the participants)
-        // The request body contains participantId, productId, productName
+        const currentUserId = req.user!.id;
         const conversationData: CreateConversationRequestDTO = req.body;
 
         const newConversation = await MessageService.createConversation(currentUserId, conversationData);
-        res.status(201).json(newConversation); // 201 Created
+        res.status(201).json(newConversation);
     } catch (error) {
         next(error);
     }
@@ -84,13 +79,13 @@ export const createConversation = async (req: AuthenticatedRequest, res: Respons
  * @route PATCH /api/conversations/:conversationId/read
  * @access Private
  */
-export const markAsRead = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const markAsRead = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userId = req.user!.id; // Authenticated user ID
-        const { conversationId } = req.params; // Get conversationId from URL parameters
+        const userId = req.user!.id;
+        const { conversationId } = req.params;
 
         await MessageService.markMessagesAsRead(userId, conversationId);
-        res.status(204).send(); // 204 No Content is appropriate for a successful update that returns no body
+        res.status(204).send();
     } catch (error) {
         next(error);
     }
@@ -101,12 +96,12 @@ export const markAsRead = async (req: AuthenticatedRequest, res: Response, next:
  * @route PATCH /api/messages/mark-all-read
  * @access Private
  */
-export const markAllAsRead = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const markAllAsRead = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userId = req.user!.id; // Authenticated user ID
+        const userId = req.user!.id;
 
         await MessageService.markAllMessagesAsRead(userId);
-        res.status(204).send(); // 204 No Content
+        res.status(204).send();
     } catch (error) {
         next(error);
     }
