@@ -18,8 +18,8 @@ import { connectDB } from './config/db';
 import { errorHandler } from './middlewares/error.middleware';
 import { UserRole } from './types/enums';
 import uploadRoutes from './routes/upload.routes';
-// import { startJobScheduler } from './jobs/scheduler';
-// import { runPriceScraperJob } from './jobs/priceScraper.job';
+import { startJobScheduler } from './jobs/scheduler';
+import { runPriceScraperJob } from './jobs/priceScraper.job';
 
 
 
@@ -48,7 +48,15 @@ app.use('/upload', uploadRoutes);
 // --- Global Error Handler ---
 app.use(errorHandler);
 
-
+(async () => {
+  console.log('[SEED DATA] Attempting to run price scraper job for initial data seeding...');
+  try {
+    await runPriceScraperJob();
+    console.log('[SEED DATA] Initial price scraping job completed successfully.');
+  } catch (error) {
+    console.error('[SEED DATA] Failed to run initial price scraping job:', error);
+  }
+})();
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
