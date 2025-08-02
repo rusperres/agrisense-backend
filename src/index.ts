@@ -30,7 +30,9 @@ const app = express();
 connectDB();
 
 // --- Express Middleware ---
-app.use(cors()); // Allow all origins for now, configure as needed
+app.use(cors({
+  origin: 'https://agrisense-wine.vercel.app'
+}));
 app.use(express.json());
 
 // --- Express Routes ---
