@@ -1,6 +1,3 @@
-// src/jobs/test.ts
-
-// IMPORTANT: Load environment variables from .env file before anything else.
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -8,8 +5,6 @@ import { runPriceScraperJob } from './priceScraper.job';
 import { NCR_DA_PDF_BASE_URL } from '../config/env';
 
 // --- Manual Test Script ---
-// This script provides a simple way to manually execute the price scraper job
-// and observe its behavior and output in the console.
 
 console.log('--- Starting Manual Price Scraper Job Test ---');
 console.log('Note: This is a basic manual test. External functions (like downloadPdf, saveMarketPrices,');
