@@ -1,10 +1,7 @@
 import cron from 'node-cron';
 import { runPriceScraperJob } from './priceScraper.job';
 
-/**
- * Configures and starts all scheduled jobs for the application.
- * This function should be called once when the application starts.
- */
+
 export const startJobScheduler = () => {
   console.log('[JOB SCHEDULER] Initializing scheduled jobs...');
 
