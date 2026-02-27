@@ -7,34 +7,34 @@ const router = Router();
 
 router.get(
     '/',
-    authenticateUser, // A user must be logged in to fetch their cart
+    authenticateUser, 
     CartController.fetchCart
 );
 
 router.post(
     '/add',
-    authenticateUser, // User must be authenticated
-    validateAddToCart, // Validate the request body
-    CartController.addToCart // Controller function to handle the request
+    authenticateUser,
+    validateAddToCart, 
+    CartController.addToCart 
 );
 
 router.delete(
-    '/remove/:itemId', // itemId will be extracted from URL parameters
-    authenticateUser,   // User must be authenticated
-    validateRemoveCartItem, // Validate the itemId from params
-    CartController.removeCartItem // Controller function to handle the request
+    '/remove/:itemId', 
+    authenticateUser,  
+    validateRemoveCartItem,
+    CartController.removeCartItem 
 );
 
 router.patch(
-    '/update/:itemId', // itemId will be extracted from URL parameters
-    authenticateUser,   // User must be authenticated
-    validateUpdateCartItemQuantity, // Validate the itemId from params and quantity from body
-    CartController.updateCartItemQuantity // Controller function to handle the request
+    '/update/:itemId', 
+    authenticateUser,  
+    validateUpdateCartItemQuantity, 
+    CartController.updateCartItemQuantity 
 );
 
 router.delete(
     '/clear',
-    authenticateUser, // A user must be logged in to clear their cart
-    CartController.clearCart // Controller function to handle the request
+    authenticateUser, 
+    CartController.clearCart 
 );
 export default router;
