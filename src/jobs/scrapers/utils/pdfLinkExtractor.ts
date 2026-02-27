@@ -1,24 +1,17 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 
-/**
- * Fetches the DA price monitoring page and extracts the URL of the latest Daily Price Index PDF.
- * @param priceMonitoringUrl The URL of the DA Price Monitoring page.
- * @returns The URL of the latest Daily Price Index PDF, or null if not found.
- */
 export const extractLatestDailyPriceIndexPdfLink = async (priceMonitoringUrl: string): Promise<string | null> => {
     console.log(`[PDF LINK EXTRACTOR] Attempting to fetch HTML from: ${priceMonitoringUrl}`);
     try {
-        // Add a timeout to the axios request to prevent it from hanging indefinitely
-        const response = await axios.get(priceMonitoringUrl, { timeout: 30000 }); // 30 second timeout
+        const response = await axios.get(priceMonitoringUrl, { timeout: 30000 }); 
         const html = response.data;
         console.log(`[PDF LINK EXTRACTOR] Successfully fetched HTML. Response status: ${response.status}`);
 
-        const $ = cheerio.load(html); // Load the HTML into cheerio
+        const $ = cheerio.load(html); 
         console.log('[PDF LINK EXTRACTOR] HTML loaded into Cheerio parser.');
 
-        // Target the "Daily Price Index" section.
-        // We look for the h3 tag with the specific text, then find the next table.
+        
         const dailyPriceIndexTable = $('h3:contains("Daily Price Index")').next('table#tablepress-112');
         console.log(`[PDF LINK EXTRACTOR] Checking for 'Daily Price Index' table... Found: ${dailyPriceIndexTable.length > 0}`);
 
@@ -26,9 +19,7 @@ export const extractLatestDailyPriceIndexPdfLink = async (priceMonitoringUrl: st
             console.warn('[PDF LINK EXTRACTOR] "Daily Price Index" table not found on the page. Exiting extraction.');
             return null;
         }
-
-        // Find the first <a> tag within the tbody of this table.
-        // This should correspond to the most recent daily price index.
+        
         console.log('[PDF LINK EXTRACTOR] Table found. Searching for the latest PDF link...');
         const latestPdfLink = dailyPriceIndexTable.find('tbody tr:first-child td.column-1 a').attr('href');
 
