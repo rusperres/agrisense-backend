@@ -25,35 +25,35 @@ export const login = async (req: Request<any, any, LoginRequestDTO>, res: Respon
 
 export const getUserProfile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const userId = req.user!.id; // Get user ID from the authenticated request
-    const userProfile = await AuthService.fetchUserProfileById(userId); // Call the service function
-    res.status(200).json({ result: userProfile }); // Send the user profile as JSON
+    const userId = req.user!.id;
+    const userProfile = await AuthService.fetchUserProfileById(userId); 
+    res.status(200).json({ result: userProfile }); 
   } catch (error) {
-    next(error); // Pass errors to the error handling middleware
+    next(error);
   }
 };
 
 export const updateProfile = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = req.user!.id;
-    const updates: UpdateProfileRequestDTO = req.body; // <--- ADD THIS LINE IF NEEDED
+    const updates: UpdateProfileRequestDTO = req.body;
 
     const result = await AuthService.updateUserProfile(userId, updates);
-    res.status(200).json(result); // 200 OK with the updated user data
+    res.status(200).json(result); 
   } catch (error) {
-    next(error); // Pass error to global error handler
+    next(error);
   }
 };
 
 export const updateUserLocation = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const userId = req.user!.id; // User ID from authenticated session
-    const locationUpdates: LocationUpdateRequestDTO = req.body; // Validated location data from frontend
+    const userId = req.user!.id;
+    const locationUpdates: LocationUpdateRequestDTO = req.body;
 
     const updatedUser = await AuthService.updateUserLocationInDB(userId, locationUpdates);
-    res.status(200).json(updatedUser); // Send back the updated user profile
+    res.status(200).json(updatedUser);
   } catch (error) {
-    next(error); // Pass error to global error handler
+    next(error); 
   }
 };
 
