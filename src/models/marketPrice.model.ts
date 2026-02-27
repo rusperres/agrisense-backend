@@ -1,31 +1,19 @@
-// src/models/marketPrice.model.ts
-
-import { pool } from '../config/db'; // Assuming db.ts exports a PostgreSQL pool
+import { pool } from '../config/db'; 
 import { MarketPriceEntity, NewMarketPrice } from '../types/entities/marketPrice.entity';
-import { MarketTrend } from '../types/enums'; // Import MarketTrend enum
+import { MarketTrend } from '../types/enums';
 
-/**
- * Inserts an array of new market price records into the 'market_prices' table.
- * Uses a single prepared statement with UNNEST for efficient bulk insertion.
- * Each insertion will create a new record with a unique 'id',
- * allowing for "almost identical" entries (e.g., same crop, region, date but different price/source).
- *
- * @param marketPrices An array of NewMarketPrice objects to insert.
- * @returns A Promise resolving to the inserted MarketPrice records (with IDs).
- */
 export const insertMarketPrices = async (marketPrices: NewMarketPrice[]): Promise<MarketPriceEntity[]> => {
   if (marketPrices.length === 0) {
     console.log('[MarketPrice Model] No market prices to insert.');
     return [];
   }
 
-  // Construct arrays for each column to be unnested
   const cropNames = marketPrices.map(mp => mp.crop_name || null);
   const categories = marketPrices.map(mp => mp.category || null);
   const regions = marketPrices.map(mp => mp.region || null);
   const prices = marketPrices.map(mp => mp.price || null);
   const units = marketPrices.map(mp => mp.unit || null);
-  const trends = marketPrices.map(mp => mp.trend || null); // Note: mp.trend is already a string ('up', 'down', etc.)
+  const trends = marketPrices.map(mp => mp.trend || null); 
   const sources = marketPrices.map(mp => mp.source || null);
   const dates = marketPrices.map(mp => mp.date || null);
   const specifications = marketPrices.map(mp => mp.specification || null);
@@ -79,12 +67,6 @@ export const insertMarketPrices = async (marketPrices: NewMarketPrice[]): Promis
   }
 };
 
-/**
- * Finds the latest market price record for a given crop and optional specification.
- * @param cropName The name of the crop.
- * @param specification Optional specification to filter by.
- * @returns A Promise resolving to the latest MarketPriceEntity object, or null if not found.
- */
 export const findLatestMarketPriceByCrop = async (
   cropName: string,
   specification?: string
@@ -117,14 +99,6 @@ export const findLatestMarketPriceByCrop = async (
   }
 };
 
-/**
- * Finds historical market prices for a given crop name and optional specification
- * within a specified limit (e.g., last 180 days).
- * @param cropName The name of the crop.
- * @param limit The maximum number of historical records to retrieve.
- * @param specification Optional specification to filter by.
- * @returns A Promise resolving to an array of MarketPriceEntity objects, ordered by date descending.
- */
 export const findHistoricalMarketPricesByCrop = async (
   cropName: string,
   limit: number,
@@ -159,14 +133,6 @@ export const findHistoricalMarketPricesByCrop = async (
   }
 };
 
-/**
- * Finds all market price records for a specific date, with optional filters.
- * @param date The date to query for (in 'YYYY-MM-DD' format).
- * @param region Optional region to filter by.
- * @param cropName Optional crop name to filter by.
- * @param specification Optional specification to filter by.
- * @returns A Promise resolving to an array of MarketPriceEntity objects.
- */
 export const findMarketPricesByDate = async (
   date: string,
   region?: string,
