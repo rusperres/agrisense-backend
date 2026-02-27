@@ -36,32 +36,27 @@ export const validateLogin: RequestHandler[] = [
 ];
 
 export const validateUpdateProfile: RequestHandler[] = [
-    // Name is optional for update, but if provided, validate length
     body('name')
         .optional()
         .isString().withMessage('Name must be a string')
         .trim()
         .isLength({ min: 2, max: 100 }).withMessage('Name must be between 2 and 100 characters'),
 
-    // Email is optional for update, but if provided, validate format and uniqueness (except for current user)
     body('email')
         .optional()
         .isEmail().withMessage('Invalid email format')
         .normalizeEmail(),
 
-    // Phone is optional for update, but if provided, validate format and uniqueness (except for current user)
     body('phone')
         .optional()
         .isMobilePhone('any', { strictMode: false }).withMessage('Invalid phone number format'),
 
-    // Location address is nested, so check if location object exists and then its address
     body('location.address')
         .optional()
         .isString().withMessage('Address must be a string')
         .trim()
         .isLength({ min: 5, max: 255 }).withMessage('Address must be between 5 and 255 characters'),
 
-    // Middleware to check for validation errors
     ((req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -113,13 +108,13 @@ export const validateUpdateEWalletDetails: RequestHandler[] = [
         .optional()
         .isString().withMessage('QR Code Image must be a string (URL or base64)')
         .custom((value, { req }) => {
-            if (value === null && req.body.qrCodeImage !== undefined) { // Allows explicit null
+            if (value === null && req.body.qrCodeImage !== undefined) { 
                 return true;
             }
             if (typeof value === 'string' && value.length > 0) {
                 return true;
             }
-            return false; // For cases like empty string, but `isLength` handles min
+            return false; 
         })
         .withMessage('QR Code Image must be a valid URL/base64 string or null'),
     ((req, res, next) => {
@@ -157,7 +152,6 @@ export const validateCreateProduct: RequestHandler[] = [
     body('harvest_date').optional().isString().withMessage('Harvest date must be a string (ISO 8601 format) or null')
         .custom((value: string | null) => {
             if (value === null) return true;
-            // Basic ISO 8601 check, a more robust check might involve parsing Date
             return /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z)?$/.test(value);
         }).withMessage('Harvest date must be a valid ISO 8601 string or null'),
     body('location').optional().isObject().withMessage('Location must be an object or null'),
@@ -185,7 +179,6 @@ export const validateCreateProduct: RequestHandler[] = [
 ];
 
 export const validateUpdateProduct: RequestHandler[] = [
-    // All fields are optional for an update
     body('name').optional().isString().withMessage('Product name must be a string'),
     body('variety').optional().isString().withMessage('Variety must be a string or null'),
     body('quantity').optional().isInt({ min: 0 }).withMessage('Quantity must be a non-negative integer'),
@@ -235,11 +228,10 @@ export const validateProductId: RequestHandler[] = [
 export const validateAddToCart: RequestHandler[] = [
     body('productId')
         .notEmpty().withMessage('Product ID is required')
-        .isUUID().withMessage('Product ID must be a valid UUID'), // Assuming product IDs are UUIDs
+        .isUUID().withMessage('Product ID must be a valid UUID'), 
     body('quantity')
         .isInt({ min: 1 }).withMessage('Quantity must be a positive integer'),
 
-    // Middleware to check for validation errors
     ((req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -252,9 +244,8 @@ export const validateAddToCart: RequestHandler[] = [
 export const validateRemoveCartItem: RequestHandler[] = [
     param('itemId')
         .notEmpty().withMessage('Cart item ID is required')
-        .isUUID().withMessage('Cart item ID must be a valid UUID'), // Assuming cart item IDs are UUIDs
+        .isUUID().withMessage('Cart item ID must be a valid UUID'), 
 
-    // Middleware to check for validation errors
     ((req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -267,11 +258,10 @@ export const validateRemoveCartItem: RequestHandler[] = [
 export const validateUpdateCartItemQuantity: RequestHandler[] = [
     param('itemId')
         .notEmpty().withMessage('Cart item ID is required')
-        .isUUID().withMessage('Cart item ID must be a valid UUID'), // Assuming cart item IDs are UUIDs
+        .isUUID().withMessage('Cart item ID must be a valid UUID'), 
     body('quantity')
-        .isInt({ min: 1 }).withMessage('Quantity must be a positive integer'), // Quantity must be at least 1
+        .isInt({ min: 1 }).withMessage('Quantity must be a positive integer'), 
 
-    // Middleware to check for validation errors
     ((req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -283,23 +273,20 @@ export const validateUpdateCartItemQuantity: RequestHandler[] = [
 
 
 export const validatePlaceOrder: RequestHandler[] = [
-    // Validate the 'items' array
-    body('items')
+   body('items')
         .isArray({ min: 1 }).withMessage('At least one item is required to place an order'),
 
-    // Validate each item in the 'items' array.
     body('items.*.product_id')
         .notEmpty().withMessage('Product ID is required for each item')
         .isUUID().withMessage('Product ID must be a valid UUID'),
     body('items.*.quantity')
         .isInt({ min: 1 }).withMessage('Quantity must be a positive integer for each item'),
 
-    // The frontend payload uses 'payment_method', so the middleware should check for that.
     body('payment_method')
         .isIn(Object.values(PaymentMethod)).withMessage(`Payment method must be one of: ${Object.values(PaymentMethod).join(', ')}`),
 
     body('delivery_location')
-        .exists().withMessage('Delivery location is required'), // Ensures the object itself is present
+        .exists().withMessage('Delivery location is required'),
     body('delivery_location.lat')
         .isFloat({ min: -90, max: 90 }).withMessage('Latitude must be a valid number between -90 and 90'),
     body('delivery_location.lng')
@@ -307,7 +294,6 @@ export const validatePlaceOrder: RequestHandler[] = [
     body('delivery_location.address')
         .optional({ nullable: true }).isString().withMessage('Address must be a string or null'),
 
-    // Custom middleware to handle validation results
     ((req, res, next) => {
 
         const errors = validationResult(req);
@@ -319,7 +305,7 @@ export const validatePlaceOrder: RequestHandler[] = [
 ];
 
 export const validateUpdateOrderStatus: RequestHandler[] = [
-    param('id') // The order ID comes from the URL parameter
+    param('id') 
         .notEmpty().withMessage('Order ID is required')
         .isUUID().withMessage('Order ID must be a valid UUID'),
     body('status')
@@ -358,7 +344,7 @@ export const validateCreateReview: RequestHandler[] = [
         .isInt({ min: 1, max: 5 }).withMessage('Rating must be an integer between 1 and 5'),
     body('comment')
         .optional({ nullable: true }).isString().withMessage('Comment must be a string')
-        .isLength({ max: 500 }).withMessage('Comment cannot exceed 500 characters'), // Example max length
+        .isLength({ max: 500 }).withMessage('Comment cannot exceed 500 characters'),
 
     ((req, res, next) => {
         const errors = validationResult(req);
@@ -428,7 +414,7 @@ export const validateRejectCrop: RequestHandler[] = [
         .isUUID()
         .withMessage('Invalid crop ID format. Must be a valid UUID.'),
     body('reason')
-        .optional() // Reason is optional
+        .optional() 
         .isString()
         .trim()
         .isLength({ min: 1, max: 500 })
@@ -447,10 +433,10 @@ export const validateFlagCrop: RequestHandler[] = [
         .isUUID()
         .withMessage('Invalid crop ID format. Must be a valid UUID.'),
     body('reason')
-        .notEmpty() // Reason is required for flagging
+        .notEmpty() 
         .isString()
         .trim()
-        .isLength({ min: 5, max: 500 }) // Example: minimum 5 characters for a meaningful reason
+        .isLength({ min: 5, max: 500 }) 
         .withMessage('Flagging reason is required and must be a string between 5 and 500 characters.'),
     ((req, res, next) => {
         const errors = validationResult(req);
@@ -528,33 +514,28 @@ export const validateCreateReport: RequestHandler[] = [
 ];
 
 export const validateReportStatusUpdate: RequestHandler[] = [
-    // Validate reportId from params
     param('reportId').isUUID().withMessage('Report ID must be a valid UUID').notEmpty().withMessage('Report ID is required'),
-    // Validate status from body
     body('status')
-        .optional() // It's optional as adminNotes/actionTaken might be updated without status change
+        .optional()
         .isIn(Object.values(ReportStatus)).withMessage(`Status must be one of: ${Object.values(ReportStatus).join(', ')}`),
-    // Validate adminNotes from body
     body('adminNotes')
         .optional()
         .isString().withMessage('Admin notes must be a string')
         .trim()
         .isLength({ min: 1, max: 1000 }).withMessage('Admin notes must be between 1 and 1000 characters')
-        .bail() // Stop if it's not a string/too short
+        .bail() 
         .isString().withMessage('Admin notes must be a string or null')
         .custom(value => value === null || (typeof value === 'string' && value.length > 0))
         .withMessage('Admin notes cannot be an empty string, must be string or null'),
-    // Validate actionTaken from body
     body('actionTaken')
         .optional()
         .isString().withMessage('Action taken must be a string')
         .trim()
         .isLength({ min: 1, max: 255 }).withMessage('Action taken must be between 1 and 255 characters')
-        .bail() // Stop if it's not a string/too short
+        .bail() 
         .custom(value => value === null || (typeof value === 'string' && value.length > 0))
         .withMessage('Action taken cannot be an empty string, must be string or null'),
 
-    // The final middleware to check for validation errors
     ((req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -606,13 +587,9 @@ export const validateCreateConversation: RequestHandler[] = [
 ];
 
 export const validateMarkMessagesRead: RequestHandler[] = [
-    param('conversationId') // This comes from the URL parameter, not the body
+    param('conversationId') 
         .notEmpty().withMessage('Conversation ID is required in params')
         .isString().withMessage('Conversation ID in params must be a string'),
-    // Note: MarkMessagesReadRequestDTO can be empty or have conversationId.
-    // If it's *only* using the param, you don't need a body validation here for it.
-    // If you plan to send it in the body for other mark-read logic, you'd add:
-    // body('conversationId').optional().isString().withMessage('Conversation ID in body must be a string'),
     ((req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -623,9 +600,7 @@ export const validateMarkMessagesRead: RequestHandler[] = [
 ];
 
 export const validateApproveApplication: RequestHandler[] = [
-    // Validate the applicationId from URL parameters
     param('applicationId').isUUID().withMessage('Invalid application ID format.'),
-    // notes is optional for approval, but if provided, it should be a string
     body('notes').optional().isString().trim().withMessage('Notes must be a string.'),
     ((req, res, next) => {
         const errors = validationResult(req);
@@ -637,9 +612,7 @@ export const validateApproveApplication: RequestHandler[] = [
 ];
 
 export const validateRejectApplication: RequestHandler[] = [
-    // Validate the applicationId from URL parameters
     param('applicationId').isUUID().withMessage('Invalid application ID format.'),
-    // notes is required for rejection and must be a non-empty string
     body('notes').notEmpty().withMessage('Rejection notes are required.')
         .isString().trim().withMessage('Notes must be a string.'),
     ((req, res, next) => {
@@ -652,9 +625,7 @@ export const validateRejectApplication: RequestHandler[] = [
 ];
 
 export const validateSuspendUser: RequestHandler[] = [
-    // Validate the userId from URL parameters
     param('userId').isUUID().withMessage('Invalid user ID format.'),
-    // reason is required for suspension and must be a non-empty string
     body('reason').notEmpty().withMessage('Suspension reason is required.')
         .isString().trim().withMessage('Reason must be a string.'),
     ((req, res, next) => {
