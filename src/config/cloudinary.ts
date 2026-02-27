@@ -1,9 +1,7 @@
-// backend/src/config/cloudinary.ts
 import { v2 as cloudinary } from 'cloudinary';
 import dotenv from 'dotenv';
 import path from 'path';
 
-// Load environment variables from the .env file in the project root
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 cloudinary.config({
