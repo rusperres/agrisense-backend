@@ -1,7 +1,7 @@
 import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
 import { extractTextFromPdf } from '../aiParse/lib/textExtractionPdfParse';
-import { performOcr } from '../../utils/ocr'; // Ensure this path is correct
+import { performOcr } from '../../utils/ocr'; 
 import { processUnstructuredData } from '../aiParse/unstructuredDataProcessor';
 
 const runTestAiParse = async () => {
@@ -9,10 +9,9 @@ const runTestAiParse = async () => {
 
     const pdfFileName = 'Daily-Price-Index-July-7-2025.pdf';
     const pdfDate = '2025-07-07';
-    const localPdfPath = path.join(__dirname, '../../../../../data/pdfs', pdfFileName); // Adjust path relative to test file
+    const localPdfPath = path.join(__dirname, '../../../../../data/pdfs', pdfFileName);
 
     try {
-        // Step 1: Extract raw text using pdf-parse
         let rawText = '';
         try {
             rawText = await extractTextFromPdf(localPdfPath);
@@ -21,8 +20,7 @@ const runTestAiParse = async () => {
             console.warn("[TEST-AI-PARSE] pdf-parse failed, this is normal if the PDF is image-based. Attempting OCR fallback.");
         }
 
-        // Step 2: If text from pdf-parse is insufficient or failed, try OCR
-        const MIN_TEXT_LENGTH_FOR_AI = 50; // Set a reasonable minimum length
+        const MIN_TEXT_LENGTH_FOR_AI = 50; 
         if (rawText.length < MIN_TEXT_LENGTH_FOR_AI) {
             console.log("[TEST-AI-PARSE] Text from pdf-parse is too short or empty. Attempting OCR...");
             try {
@@ -31,7 +29,7 @@ const runTestAiParse = async () => {
                 console.log(`[TEST-AI-PARSE] Successfully extracted ${rawText.length} characters using OCR.`);
             } catch (ocrError) {
                 console.error("[TEST-AI-PARSE] OCR fallback failed:", ocrError);
-                rawText = ''; // Clear rawText if OCR fails
+                rawText = '';
             }
         }
 
@@ -40,7 +38,6 @@ const runTestAiParse = async () => {
             return;
         }
 
-        // Step 3: Process the raw text using the AI parser
         console.log("[TEST-AI-PARSE] Passing raw text to processUnstructuredData...");
         const extractedItems = await processUnstructuredData(rawText, pdfDate);
 
@@ -51,7 +48,6 @@ const runTestAiParse = async () => {
             extractedItems.slice(0, 5).forEach((item, index) => {
                 console.log(`  ${index + 1}. Crop: ${item.crop_name}, Price: ${item.price}, Category: ${item.category}, Spec: ${item.specification || 'N/A'}`);
             });
-            // You can log all items if you want: console.log(JSON.stringify(extractedItems, null, 2));
         } else {
             console.warn("No market price items were extracted by the AI parser. Check logs above for details.");
         }
