@@ -10,10 +10,6 @@ import {
     SingleUserResponseDTO,
 } from '../types/dtos/admin.dto';
 
-/**
- * Handles fetching all verification applications.
- * Requires admin authentication.
- */
 export const getApplications = async (req: Request, res: Response<GetApplicationsResponseDTO>, next: NextFunction) => {
     try {
         const applications = await AdminService.getApplications();
@@ -23,10 +19,6 @@ export const getApplications = async (req: Request, res: Response<GetApplication
     }
 };
 
-/**
- * Handles approving a verification application.
- * Requires admin authentication.
- */
 export const approveApplication = async (
     req: Request,
     res: Response<SingleApplicationResponseDTO>,
@@ -44,10 +36,6 @@ export const approveApplication = async (
     }
 };
 
-/**
- * Handles rejecting a verification application.
- * Requires admin authentication.
- */
 export const rejectApplication = async (
     req: Request,
     res: Response<SingleApplicationResponseDTO>,
@@ -65,10 +53,6 @@ export const rejectApplication = async (
     }
 };
 
-/**
- * Handles fetching all users.
- * Requires admin authentication.
- */
 export const getUsers = async (req: Request, res: Response<GetUsersResponseDTO>, next: NextFunction) => {
     try {
         const users = await AdminService.getUsers();
@@ -78,10 +62,6 @@ export const getUsers = async (req: Request, res: Response<GetUsersResponseDTO>,
     }
 };
 
-/**
- * Handles suspending a user.
- * Requires admin authentication.
- */
 export const suspendUser = async (
     req: Request,
     res: Response<SingleUserResponseDTO>,
