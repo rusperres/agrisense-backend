@@ -38,10 +38,6 @@ export const removeCartItem = async (req: Request, res: Response, next: NextFunc
     }
 };
 
-/**
- * Updates the quantity of a specific item in the authenticated user's cart.
- * PATCH /api/cart/update/:itemId
- */
 export const updateCartItemQuantity = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = req.user!.id;
