@@ -4,7 +4,6 @@ dotenv.config();
 import { runPriceScraperJob } from './priceScraper.job';
 import { NCR_DA_PDF_BASE_URL } from '../config/env';
 
-// --- Manual Test Script ---
 
 console.log('--- Starting Manual Price Scraper Job Test ---');
 console.log('Note: This is a basic manual test. External functions (like downloadPdf, saveMarketPrices,');
