@@ -9,10 +9,6 @@ import { ReportStatus, ReportPriority } from '../types/enums';
 
 import * as ReportService from '../services/report.service';
 
-/**
- * Helper function to map a ReportEntity to a ReportResponseDTO.
- * This ensures consistency in the data returned to the frontend.
- */
 const mapReportEntityToResponseDTO = (entity: ReportService.ReportEntityFromService): ReportResponseDTO => {
     return {
         id: entity.id,
@@ -33,10 +29,6 @@ const mapReportEntityToResponseDTO = (entity: ReportService.ReportEntityFromServ
     };
 };
 
-/**
- * Handles creating a new report.
- * Accessible by authenticated users (buyers/sellers).
- */
 export const createReport = async (
     req: Request,
     res: Response,
@@ -60,11 +52,6 @@ export const createReport = async (
     }
 };
 
-/**
- * Handles fetching reports.
- * Accessible only by Admins.
- * Supports filtering by status via query parameter.
- */
 export const getReports = async (
     req: Request,
     res: Response,
@@ -83,10 +70,6 @@ export const getReports = async (
     }
 };
 
-/**
- * Handles updating the status and notes of a specific report.
- * Accessible only by Admins.
- */
 export const updateReportStatus = async (
     req: Request,
     res: Response,
