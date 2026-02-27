@@ -1,9 +1,8 @@
-# src/jobs/scrapers/ncr/python_scripts/extract_tables_tabula.py
 import tabula
 import sys
 import json
 import os
-import numpy as np # Import numpy to handle NaN values
+import numpy as np 
 
 def extract_tables_from_pdf(pdf_path):
     """
@@ -11,24 +10,19 @@ def extract_tables_from_pdf(pdf_path):
     Attempts to use both lattice and stream mode for robustness.
     """
     try:
-        # Try lattice mode first (for PDFs with clear lines)
         df_list = tabula.read_pdf(pdf_path, pages='all', lattice=True, multiple_tables=True, stream=False)
         if not df_list:
-            # If no tables found with lattice, try stream mode (for PDFs without clear lines)
             df_list = tabula.read_pdf(pdf_path, pages='all', stream=True, multiple_tables=True, lattice=False)
 
         all_extracted_data = []
         for df in df_list:
             df_processed = df.copy()
-            # Convert NaN values to None (which JSON serializes as null)
             df_processed = df_processed.replace({np.nan: None})
-            # No .astype(str) here, so numbers will remain numbers, etc.
             all_extracted_data.extend(df_processed.to_dict(orient='records'))
 
         print(json.dumps(all_extracted_data))
 
     except Exception as e:
-        # Print error to stderr so Node.js can catch it
         error_message = {"error": "PDF extraction failed", "message": str(e)}
         print(json.dumps(error_message), file=sys.stderr)
         sys.exit(1)
