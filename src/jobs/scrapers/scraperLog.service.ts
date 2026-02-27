@@ -1,18 +1,11 @@
 import { pool } from '../../config/db';
 
-/**
- * Defines the structure for a scraper log entry.
- */
 interface ScraperLog {
     text: string;
     parserUsed: 'AI Unstructured' | 'Tabula Structured' | 'PDF Parse';
-    date: string; // YYYY-MM-DD
+    date: string;
 }
 
-/**
- * Saves a scraper log entry to the database.
- * @param logData The log data to save.
- */
 export const saveScraperLog = async (logData: ScraperLog): Promise<void> => {
     let client;
 
