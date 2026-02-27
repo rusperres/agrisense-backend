@@ -2,11 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import * as ReviewService from '../services/review.service';
 import { CreateReviewRequestDTO, GetReviewsQueryDTO } from '../types/dtos/review.dto';
 
-/**
- * @function createReview
- * @description Handles the submission of a new review.
- * Ensures the authenticated user is the buyer ID provided in the review data.
- */
 export const createReview = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const buyerId = req.user?.id;
@@ -35,10 +30,6 @@ export const createReview = async (req: Request, res: Response, next: NextFuncti
     }
 };
 
-/**
- * @function getReviews
- * @description Handles fetching reviews based on query parameters (productId, sellerId, orderId).
- */
 export const getReviews = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const queryParams: GetReviewsQueryDTO = req.query;
