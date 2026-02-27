@@ -2,10 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import * as ProductService from '../services/product.service';
 import { CreateProductDTO, UpdateProductDTO } from '../types/dtos/product.dto';
 
-/**
- * Handles the creation of a new product.
- * Requires authentication and seller role.
- */
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const sellerId = req.user!.id;
@@ -74,10 +70,6 @@ export const fetchProductById = async (req: Request, res: Response, next: NextFu
     }
 };
 
-/**
- * Handles fetching products listed by the authenticated seller.
- * Requires authentication and seller role (implicitly handled by middleware on the route).
- */
 export const fetchProductsBySellerId = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const sellerId = req.user!.id;
