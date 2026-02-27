@@ -1,27 +1,12 @@
-/**
- * src/jobs/scrapers/ncr/aiParse/unstructuredDataProcessor.ts
- *
- * This module is responsible for processing unstructured (raw text) data,
- * typically extracted from PDFs, using a Large Language Model (LLM) to
- * extract structured market price information. It now instructs the LLM
- * to return data in a pipe-separated table format to optimize token usage.
- * It handles chunking the input text, making API calls to the LLM, and
- * parsing the LLM's table-formatted response.
- */
-
 import { NewMarketPrice } from '../../../../types/entities/marketPrice.entity';
 import { MarketTrend } from '../../../../types/enums';
-import { cleanText, parsePrice, extractUnit } from '../utils/commonParsers'; // Import from common utils
-import { saveScraperLog } from '../../scraperLog.service'; // NEW: Import the new log service
+import { cleanText, parsePrice, extractUnit } from '../utils/commonParsers'; 
+import { saveScraperLog } from '../../scraperLog.service'; 
 
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
 const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
 
-/**
- * Defines the structure for the LLM's expected output for a single market price item.
- * This interface remains the same, as it's the target structure after parsing.
- */
 interface LLMMarketPriceItem {
   crop_name: string;
   category: string;
@@ -30,13 +15,6 @@ interface LLMMarketPriceItem {
   unit: string;
 }
 
-/**
- * Parses a pipe-separated table string from the LLM into an array of LLMMarketPriceItem objects.
- * Assumes the first line is a header and subsequent lines are data.
- * Expected format: crop_name|category|specification|price|unit
- * @param tableString The raw table string output from the LLM.
- * @returns An array of LLMMarketPriceItem objects.
- */
 const parseLLMTableString = (tableString: string): LLMMarketPriceItem[] => {
   const lines = tableString.trim().split('\n').filter(line => line.trim() !== '');
   if (lines.length === 0) {
@@ -44,15 +22,12 @@ const parseLLMTableString = (tableString: string): LLMMarketPriceItem[] => {
     return [];
   }
 
-  // Assuming the first line is the header and we'll ignore it for direct parsing
   const dataLines = lines.slice(1);
 
   const extractedItems: LLMMarketPriceItem[] = [];
   for (const line of dataLines) {
-    // Split by pipe, then trim each part to remove leading/trailing spaces
     const parts = line.split('|').map(part => part.trim());
 
-    // Ensure we have at least 5 parts: crop_name, category, specification, price, unit
     if (parts.length >= 5) {
       extractedItems.push({
         crop_name: parts[0],
@@ -69,16 +44,9 @@ const parseLLMTableString = (tableString: string): LLMMarketPriceItem[] => {
 };
 
 
-/**
- * Processes unstructured (raw text) data using an LLM to extract market price items.
- * @param rawText The raw text content from the PDF.
- * @param date The date of the price index (YYYY-MM-DD format).
- * @returns A Promise that resolves with an array of NewMarketPrice objects.
- */
 export const processUnstructuredData = async (rawText: string, date: string): Promise<NewMarketPrice[]> => {
   console.log(`[UNSTRUCTURED DATA PROCESSOR] Starting for date: ${date}`);
   const allExtractedItems: NewMarketPrice[] = [];
-  // Removed file system logic for creating debug log directory
 
   if (!rawText.trim()) {
     console.error("[UNSTRUCTURED DATA PROCESSOR] No usable raw text provided. Cannot proceed with LLM.");
@@ -183,7 +151,6 @@ export const processUnstructuredData = async (rawText: string, date: string): Pr
         }
       }
 
-      // Prepare the log content to be saved to the database
       const subChunkLogContent = `
 === RAW LLM TABLE OUTPUT (SUB-CHUNK ${subChunkIndex}) ===
 Input Type: unstructured
@@ -212,7 +179,6 @@ ${JSON.stringify(validRecordsForThisSubChunk, null, 2)}
 
   console.log(`[UNSTRUCTURED DATA PROCESSOR] Total LLM extracted and validated ${allExtractedItems.length} records.`);
 
-  // Deduplicate before returning
   const seen = new Set<string>();
   const uniqueMarketPrices = allExtractedItems.filter(mp => {
     const key = `${mp.crop_name}|${mp.category}|${mp.region}|${mp.date}|${mp.specification}|${mp.unit}`;
